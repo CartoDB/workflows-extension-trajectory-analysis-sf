@@ -1,0 +1,28 @@
+{
+    "name": "trajectory-analysis-sf",
+    "title": "Trajectory Analysis for Snowflake",
+    "industry": "Trajectory Data",
+    "description": "Collected from vehicles, pedestrians, GPS, AIS, and other sources, trajectory data is a key input for many geospatial analyses. This extension provides a set of tools to analyze trajectories, including cleaning and simplifying trajectories, computing metrics, stop detection, and more.",
+    "icon": "trajectories_extension.svg",
+    "version": "1.0.1",
+    "lastUpdate": "2025-06-23",
+    "provider": "snowflake",
+    "author": {
+        "value": "CARTO",
+        "link": {
+            "label": "CARTO",
+            "href": "https://carto.com"
+        }
+    },
+    "license": {
+        "value": "CARTO License",
+        "link": {
+            "label": "CARTO License",
+            "href": "https://carto.com/legal"
+        }
+    },
+    "details": [],
+    "components": [
+        "frompoints"
+    ]
+}
