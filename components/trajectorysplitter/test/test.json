@@ -1,0 +1,87 @@
+[
+    {
+        "id": 1,
+        "inputs": {
+            "input_table": "trajectories",
+            "traj_id_col": "traj_id",
+            "tpoints_col": "tpoints",
+            "method": "Stops",
+            "min_angle": null,
+            "min_speed": null,
+            "min_duration": 30,
+            "duration_unit": "Seconds",
+            "max_diameter": 30,
+            "time_mode": null,
+            "valuechange_col":null,
+            "min_length": 0
+        }
+    },
+    {
+        "id": 2,
+        "inputs": {
+            "input_table": "trajectories",
+            "traj_id_col": "traj_id",
+            "tpoints_col": "tpoints",
+            "method": "Temporal",
+            "min_angle": null,
+            "min_speed": null,
+            "min_duration": null,
+            "duration_unit": null,
+            "max_diameter": null,
+            "time_mode": "Hour",
+            "valuechange_col":null,
+            "min_length": 0
+        }
+    },
+    {
+        "id": 3,
+        "inputs": {
+            "input_table": "trajectories",
+            "traj_id_col": "traj_id",
+            "tpoints_col": "tpoints",
+            "method": "Speed",
+            "min_angle": null,
+            "min_speed": 1,
+            "min_duration": 30,
+            "duration_unit": "Seconds",
+            "max_diameter": null,
+            "time_mode": null,
+            "valuechange_col":null,
+            "min_length": 0
+        }
+    },
+    {
+        "id": 4,
+        "inputs": {
+            "input_table": "trajectories",
+            "traj_id_col": "traj_id",
+            "tpoints_col": "tpoints",
+            "method": "Observation Gap",
+            "min_angle": null,
+            "min_speed": null,
+            "min_duration": 20,
+            "duration_unit": "Seconds",
+            "max_diameter": null,
+            "time_mode": null,
+            "valuechange_col":null,
+            "min_length": 0
+        }
+    },
+    {
+        "id": 7,
+        "inputs": {
+            "input_table": "trajectories_with_extra_column",
+            "traj_id_col": "traj_id",
+            "tpoints_col": "tpoints",
+            "method": "Stops",
+            "min_angle": null,
+            "min_speed": null,
+            "min_duration": 30,
+            "duration_unit": "Seconds",
+            "max_diameter": 30,
+            "time_mode": null,
+            "valuechange_col":null,
+            "min_length": 0
+        }
+    }
+]

@@ -23,6 +23,7 @@
     },
     "details": [],
     "components": [
-        "frompoints"
+        "frompoints",
+        "trajectorysplitter"
     ]
 }

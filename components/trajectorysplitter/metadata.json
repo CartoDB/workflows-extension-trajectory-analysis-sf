@@ -1,0 +1,160 @@
+{
+    "name": "trajectorysplitter",
+    "title": "Split Trajectories",
+    "description": "Split the trajectories in different segments",
+    "version": "1.0.0",
+    "icon": "trajectory_splitter.svg",
+    "cartoEnvVars": [],
+    "inputs": [
+        {
+            "name": "input_table",
+            "title": "Trajectories table",
+            "description": "Table containing the trajectories",
+            "type": "Table"
+        },
+        {
+            "name": "traj_id_col",
+            "title": "Trajectory IDs column",
+            "description": "Column containing the trajectory IDs",
+            "type": "Column",
+            "parent": "input_table",
+            "noDefault": "true",
+            "optional": false
+        },
+        {
+            "name": "tpoints_col",
+            "title": "Trajectory points column",
+            "description": "Column containing the points for each trajectory",
+            "type": "Column",
+            "parent": "input_table",
+            "noDefault": "true",
+            "optional": false
+        },
+        {
+            "name": "method",
+            "title": "Split method",
+            "description": "Method to use when splitting the trajectories",
+            "type": "Selection",
+            "options": ["Stops", "Temporal", "Speed", "Observation Gap", "Value Change", "Angle Change"],
+            "default": "Stops"
+        },
+        {
+            "name": "min_angle",
+            "title": "Minimum Angle",
+            "description": "Minimum angle change",
+            "type": "Number",
+            "min": 0,
+            "max": 360,
+            "default": 45,
+            "showIf": [
+                {
+                    "parameter": "method",
+                    "value": "Angle Change"
+                }
+            ]
+        },
+        {
+            "name": "min_speed",
+            "title": "Minimum Speed (m/s)",
+            "description": "Consider segments above this speed, in meters per second",
+            "type": "Number",
+            "min": 0,
+            "default": 1,
+            "showIf": [
+                {
+                    "parameter": "method",
+                    "value": ["Speed", "Angle Change"]
+                }
+            ]
+        },
+        {
+            "name": "min_duration",
+            "title": "Minimum duration",
+            "description": "Minimum duration for splitting",
+            "type": "Number",
+            "min": 0,
+            "default": 300,
+            "optional": false,
+            "showIf": [
+                {
+                    "parameter": "method",
+                    "value": ["Stops", "Speed", "Observation Gap"]
+                }
+            ]
+        },
+        {
+            "name": "duration_unit",
+            "title": "Duration unit",
+            "description": "Unit for the minimum duration",
+            "type": "Selection",
+            "options": ["Seconds", "Minutes", "Hours", "Days"],
+            "default": "Seconds",
+            "optional": false,
+            "showIf": [
+                {
+                    "parameter": "method",
+                    "value": ["Stops", "Speed", "Observation Gap"]
+                }
+            ]
+        },
+        {
+            "name": "max_diameter",
+            "title": "Maximum stop diameter (m)",
+            "description": "Maximum stop diameter accepted (in meters)",
+            "type": "Number",
+            "min": 1,
+            "default": 50,
+            "optional": false,
+            "showIf": [
+                {
+                    "parameter": "method",
+                    "value": "Stops"
+                }
+            ]
+        },
+        {
+            "name": "time_mode",
+            "title": "Temporal split mode",
+            "description": "Mode to use when splitting the trajectories",
+            "type": "Selection",
+            "options": ["Hour", "Day", "Month", "Year"],
+            "optional": false,
+            "showIf": [
+                {
+                    "parameter": "method",
+                    "value": "Temporal"
+                }
+            ]
+        },
+        {
+            "name": "min_length",
+            "title": "Minimum segment length (m)",
+            "description": "Minimum length to consider a segment (in meters)",
+            "type": "Number",
+            "min": 0,
+            "default": 0,
+            "optional": false
+        },
+        {
+            "name": "valuechange_col",
+            "title": "Column to check for changes in consecutive values",
+            "description": "Name of the column to monitor for changes in consecutive values",
+            "type": "String",
+            "optional": false,
+            "showIf": [
+                {
+                    "parameter": "method",
+                    "value": "Value Change"
+                }
+            ]
+        }
+    ],
+    "outputs": [
+        {
+            "name": "output_table",
+            "title": "Output table",
+            "description": "The table with the split trajectories",
+            "type": "Table"
+        }
+    ]
+}

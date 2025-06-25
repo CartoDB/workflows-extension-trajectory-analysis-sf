@@ -322,6 +322,8 @@ def get_procedure_code_sf(component):
 
 
 def create_sql_code_sf(metadata):
+    functions_code = get_functions_code()
+
     procedures_code = ""
     for component in metadata["components"]:
         procedure_code = get_procedure_code_sf(component)
@@ -360,6 +362,9 @@ def create_sql_code_sf(metadata):
 
             DELETE FROM {WORKFLOWS_TEMP_PLACEHOLDER}.{EXTENSIONS_TABLENAME}
             WHERE name = '{metadata["name"]}';
+
+            -- create functions
+            {functions_code}
 
             -- create procedures
             {procedures_code}
@@ -527,16 +532,21 @@ def _upload_test_table_bq(filename, component):
         pass
 
 
-def infer_schema_field_sf(key: str, value: Any) -> bigquery.SchemaField:
+def infer_schema_field_sf(key: str, value: Any) -> str:
     if isinstance(value, int):
         return "NUMBER"
     elif isinstance(value, float):
         return "FLOAT"
-
+    elif isinstance(value, bool):
+        return "BOOLEAN"
+    elif isinstance(value, list):
+        return "VARIANT"  # Use VARIANT for complex structures
+    elif isinstance(value, dict):
+        return "VARIANT"  # Use VARIANT for complex structures
     elif isinstance(value, str):
         if key.endswith("date"):
             return "DATE"
-        elif key.endswith("timestamp"):
+        elif key.endswith("timestamp") or key == "t":
             return "TIMESTAMP"
         elif key.endswith("datetime"):
             return "DATETIME"
@@ -546,14 +556,17 @@ def infer_schema_field_sf(key: str, value: Any) -> bigquery.SchemaField:
                 return "GEOGRAPHY"
             except Exception:
                 return "VARCHAR"
-
+    elif value is None:
+        return "VARCHAR"  # Default for null values
     else:
-        raise NotImplementedError(
-            f"Could not infer a Snowflake SchemaField for {value} ({type(value)})"
-        )
+        # Fallback for unknown types
+        return "VARCHAR"
 
 
 def _upload_test_table_sf(filename, component):
+    import tempfile
+    import os
+
     with open(filename) as f:
         data = []
         for l in f.readlines():
@@ -576,18 +589,73 @@ def _upload_test_table_sf(filename, component):
     create_table_sql += ");\n"
     cursor = sf_client().cursor()
     cursor.execute(create_table_sql)
-    for row in data:
-        values = {}
-        for key, value in row.items():
-            if value is None:
-                values[key] = "null"
-            elif data_types[key] in ["NUMBER", "FLOAT"]:
-                values[key] = str(value)
-            else:
-                values[key] = f"'{value}'"
-        values_string = ", ".join([values[key] for key in row.keys()])
-        insert_sql = f"INSERT INTO {sf_workflows_temp}.{table_id} ({', '.join(row.keys())}) VALUES ({values_string})"
-        cursor.execute(insert_sql)
+
+    # For VARIANT columns with large data, use a different approach
+    has_variant = any(data_types[key] == "VARIANT" for key in data_types)
+
+    if has_variant:
+        # Create a temporary file with the data in NDJSON format
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as temp_file:
+            for row in data:
+                # Convert VARIANT fields to proper JSON strings
+                processed_row = {}
+                for key, value in row.items():
+                    if data_types[key] == "VARIANT":
+                        processed_row[key] = json.dumps(value)
+                    else:
+                        processed_row[key] = value
+                temp_file.write(json.dumps(processed_row) + '\n')
+            temp_file_path = temp_file.name
+
+        try:
+            # Create a temporary stage
+            stage_name = f"temp_stage_{table_id}"
+            cursor.execute(f"CREATE OR REPLACE TEMPORARY STAGE {stage_name}")
+
+            # Upload the file to the stage
+            cursor.execute(f"PUT file://{temp_file_path} @{stage_name}")
+
+            # Copy from stage with PARSE_JSON for VARIANT columns
+            copy_columns = []
+            for key in data[0].keys():
+                if data_types[key] == "VARIANT":
+                    copy_columns.append(f"PARSE_JSON($1:{key}) as {key}")
+                else:
+                    copy_columns.append(f"$1:{key} as {key}")
+
+            copy_sql = f"""
+            COPY INTO {sf_workflows_temp}.{table_id}
+            FROM (
+                SELECT {', '.join(copy_columns)}
+                FROM @{stage_name}
+            )
+            FILE_FORMAT = (TYPE = JSON)
+            """
+            cursor.execute(copy_sql)
+
+        finally:
+            # Clean up
+            if os.path.exists(temp_file_path):
+                os.unlink(temp_file_path)
+            cursor.execute(f"DROP STAGE IF EXISTS {stage_name}")
+    else:
+        # Use regular INSERT for simple data types
+        for row in data:
+            placeholders = []
+            params = []
+
+            for key, value in row.items():
+                if value is None:
+                    placeholders.append("null")
+                elif data_types[key] in ["NUMBER", "FLOAT"]:
+                    placeholders.append(str(value))
+                else:
+                    placeholders.append("%s")
+                    params.append(str(value))
+
+            insert_sql = f"INSERT INTO {sf_workflows_temp}.{table_id} ({', '.join(row.keys())}) VALUES ({', '.join(placeholders)})"
+            cursor.execute(insert_sql, params)
+
     cursor.close()
 
 
@@ -659,7 +727,7 @@ def _get_test_results(metadata, component, progress_bar=None):
             # TODO: improve argument passing to _run_query()
             component_results[test_id]["dry"] = _run_query(dry_run_query, component, metadata["provider"], tables)
             component_results[test_id]["full"] = _run_query(full_run_query, component, metadata["provider"], tables)
-            
+
             # Update progress bar after each test (dry + full run = 1 item)
             if progress_bar:
                 progress_bar.update(1)
@@ -671,17 +739,17 @@ def _get_test_results(metadata, component, progress_bar=None):
 
 def _build_query(workflows_temp, component_name, param_values, outputs):
     statements = []
-    
+
     # Add DROP TABLE statements
     for output_table in outputs.values():
         statements.append(f'DROP TABLE IF EXISTS {output_table}')
-    
+
     # Add CALL statement
     call_statement = f"""CALL {workflows_temp}.{component_name}(
         {','.join([str(p) if p is not None else 'null' for p in param_values])}
     )"""
     statements.append(call_statement)
-    
+
     return statements
 
 def _run_query(statements: list, component: dict, provider: str, tables: dict) -> dict[str, pd.DataFrame]:
@@ -690,7 +758,7 @@ def _run_query(statements: list, component: dict, provider: str, tables: dict) -
     if globals().get('verbose', False):
         for stmt in statements:
             print(stmt)
-    
+
     if provider == "bigquery":
         # Join statements with newlines for BigQuery
         combined_query = "\n".join(statements)
@@ -712,25 +780,25 @@ def _run_query(statements: list, component: dict, provider: str, tables: dict) -
         # Execute each statement separately for Snowflake
         for statement in statements:
             cur.execute(statement)
-        
+
         for output in component["outputs"]:
             output_query = f"SELECT * FROM {tables[output['name']]}"
             cur = sf_client().cursor()
             cur.execute(output_query)
-            
+
             # Use fetch_pandas_all() but process JSON strings
             df = cur.fetch_pandas_all()
-            
+
             # Convert column names to lowercase for consistency with BigQuery
             df.columns = [col.lower() for col in df.columns]
-            
+
             # Process Snowflake's JSON string columns
             if not df.empty:
                 for column in df.columns:
                     # Check if this looks like a JSON string that should be parsed
                     sample_value = df.iloc[0][column]
                     if isinstance(sample_value, str) and (
-                        sample_value.strip().startswith('[') or 
+                        sample_value.strip().startswith('[') or
                         sample_value.strip().startswith('{')
                     ):
                         try:
@@ -739,7 +807,7 @@ def _run_query(statements: list, component: dict, provider: str, tables: dict) -
                         except (json.JSONDecodeError, ValueError):
                             # If JSON parsing fails, leave as string
                             pass
-            
+
             results[output["name"]] = df
     else:
         raise NotImplementedError(f"Provider '{provider}' is not supported")
@@ -773,7 +841,7 @@ def test(component):
                         f"Dry run and full run schemas do not match "
                         f"in {component['title']} - {test_id} - {output_name}"
                     )
-            
+
             if str(test_id).startswith("skip_"):
                 # Don't compare results, it will only throw an error
                 # if there is an issue when running on BigQuery
@@ -799,22 +867,22 @@ _metadata_cache = None
 def prepare_test_data():
     """Run all SQL and collect test data."""
     global _test_results_cache, _metadata_cache
-    
+
     _metadata_cache = create_metadata()
     deploy(None)
-    
+
     # Calculate total number of tests to run for progress bar
     total_tests = 0
     current_folder = os.path.dirname(os.path.abspath(__file__))
     components_folder = os.path.join(current_folder, "components")
-    
+
     for component in _metadata_cache["components"]:
         component_folder = os.path.join(components_folder, component["name"])
         test_configuration_file = os.path.join(component_folder, "test", "test.json")
         with open(test_configuration_file, "r") as f:
             test_configurations = json.loads(substitute_vars(f.read()))
         total_tests += len(test_configurations)
-    
+
     # Create progress bar only if not in verbose mode
     if not verbose:
         with tqdm(total=total_tests, desc="Running SQL tests", unit="test") as pbar:
@@ -825,7 +893,7 @@ def prepare_test_data():
 def load_test_cases():
     """Generate test cases from pre-collected data."""
     import pickle
-    
+
     # Load test data from file if available
     test_data_file = os.environ.get('PYTEST_TEST_DATA_FILE')
     if test_data_file and os.path.exists(test_data_file):
@@ -840,7 +908,7 @@ def load_test_cases():
             prepare_test_data()
         metadata_cache = _metadata_cache
         test_results_cache = _test_results_cache
-    
+
     test_cases = []
     current_folder = os.path.dirname(os.path.abspath(__file__))
     components_folder = os.path.join(current_folder, "components")
@@ -863,7 +931,7 @@ def load_test_cases():
             # Results test case (skip if test_id starts with "skip_")
             if not str(test_id).startswith("skip_"):
                 test_cases.append({
-                    "test_type": "results", 
+                    "test_type": "results",
                     "component": component,
                     "test_id": test_id,
                     "outputs": outputs,
@@ -900,13 +968,13 @@ def test_extension_components(test_case):
             output = dataframe_to_dict(test_result_df)
             expected_normalized = normalize_json(_sorted_json(expected[output_name]), decimal_places=3)
             result_normalized = normalize_json(_sorted_json(output), decimal_places=3)
-            
+
             # First check lengths to give pytest a chance to show meaningful diff
             assert len(result_normalized) == len(expected_normalized), (
                 f"Row count mismatch in {test_case['component']['name']} - {test_case['test_id']} - {output_name}: "
                 f"expected {len(expected_normalized)} rows, got {len(result_normalized)} rows"
             )
-            
+
             # Then compare record by record for better pytest diff output
             for i, (actual_record, expected_record) in enumerate(zip(result_normalized, expected_normalized)):
                 assert actual_record == expected_record, (
@@ -917,10 +985,10 @@ def run_pytest_tests():
     """Run the pytest-based tests."""
     import tempfile
     import pickle
-    
+
     # Step 1: Prepare all test data and save to file
     prepare_test_data()
-    
+
     # Save test data to temporary file
     with tempfile.NamedTemporaryFile(mode='wb', delete=False, suffix='.pkl') as f:
         pickle.dump({
@@ -928,15 +996,15 @@ def run_pytest_tests():
             'results': _test_results_cache
         }, f)
         temp_file_path = f.name
-    
+
     # Set environment variable so pytest can find the data file
     os.environ['PYTEST_TEST_DATA_FILE'] = temp_file_path
-    
+
     try:
         # Step 2: Start pytest session
         print("Running pytest-based extension tests...")
         retcode = pytest.main(["-vv", "--tb=short", __file__ + "::test_extension_components"])
-        
+
         if retcode == 0:
             print("Extension correctly tested with pytest.")
         else:
