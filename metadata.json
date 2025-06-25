@@ -24,6 +24,7 @@
     "details": [],
     "components": [
         "frompoints",
-        "trajectorysplitter"
+        "trajectorysplitter",
+        "stopdetector"
     ]
 }

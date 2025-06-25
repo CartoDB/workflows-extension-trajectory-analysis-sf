@@ -1,0 +1,79 @@
+{
+    "name": "stopdetector",
+    "title": "Detect Stops",
+    "description": "Detect stops in a trajectory",
+    "version": "1.0.0",
+    "icon": "trajectory_stop_detector.svg",
+    "cartoEnvVars": [],
+    "inputs": [
+        {
+            "name": "input_table",
+            "title": "Trajectories table",
+            "description": "Table containing the trajectories",
+            "type": "Table"
+        },
+        {
+            "name": "traj_id_col",
+            "title": "Trajectory IDs column",
+            "description": "Column containing the trajectory IDs",
+            "type": "Column",
+            "parent": "input_table",
+            "noDefault": "true",
+            "optional": false
+        },
+        {
+            "name": "tpoints_col",
+            "title": "Trajectory points column",
+            "description": "Column containing the points for each trajectory",
+            "type": "Column",
+            "parent": "input_table",
+            "noDefault": "true",
+            "optional": false
+        },
+        {
+            "name": "method",
+            "title": "Return",
+            "description": "Whether to return points representing the stops or trajectory segments before and after the stops",
+            "helper": "Points: the points representing the stops. Segments: the trajectory segments before and after the stops.",
+            "type": "Selection",
+            "options": ["Points", "Segments"],
+            "default": "Segments",
+            "optional": false
+        },
+        {
+            "name": "min_duration",
+            "title": "Minimum stop duration",
+            "description": "Minimum duration for a stop",
+            "type": "Number",
+            "min": 0,
+            "default": 300,
+            "optional": false
+        },
+        {
+            "name": "duration_unit",
+            "title": "Duration unit",
+            "description": "Unit for the minimum stop duration",
+            "type": "Selection",
+            "options": ["Seconds", "Minutes", "Hours", "Days"],
+            "default": "Seconds",
+            "optional": false
+        },
+        {
+            "name": "max_diameter",
+            "title": "Maximum stop diameter (m)",
+            "description": "Maximum stop diameter accepted (in meters)",
+            "type": "Number",
+            "min": 1,
+            "default": 50,
+            "optional": false
+        }
+    ],
+    "outputs": [
+        {
+            "name": "output_table",
+            "title": "Output table",
+            "description": "The table with the stops information",
+            "type": "Table"
+        }
+    ]
+}
