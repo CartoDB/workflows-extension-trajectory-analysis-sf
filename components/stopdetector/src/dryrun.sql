@@ -13,7 +13,7 @@ $$
             CREATE OR REPLACE TABLE ${OUTPUT_TABLE} (
                 ${TRAJ_ID_COL} VARCHAR,
                 stop_id VARCHAR,
-                geom VARCHAR,
+                geom GEOGRAPHY,
                 start_time TIMESTAMP,
                 end_time TIMESTAMP,
                 duration_s FLOAT

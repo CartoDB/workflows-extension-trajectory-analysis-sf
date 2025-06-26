@@ -29,6 +29,77 @@ WORKFLOWS_TEMP_PLACEHOLDER = "@@workflows_temp@@"
 # Initialize verbose flag
 verbose = False
 
+# Geometry handling for cross-platform compatibility
+from dataclasses import dataclass
+from typing import Tuple, List, Union
+
+@dataclass(frozen=True)
+class GeometryComparator:
+    """Unified geometry comparator for WKT and GeoJSON formats."""
+    geom_type: str
+    coordinates: Tuple[Tuple[float, float], ...]
+
+    @classmethod
+    def from_wkt(cls, wkt_string: str) -> 'GeometryComparator':
+        """Create GeometryComparator from WKT string."""
+        try:
+            geom = wkt.loads(wkt_string)
+            if hasattr(geom, 'coords'):
+                # Point, LineString
+                coords = list(geom.coords)
+            elif hasattr(geom, 'exterior'):
+                # Polygon
+                coords = list(geom.exterior.coords)
+            else:
+                coords = []
+
+            # Round coordinates to 5 decimal places for comparison
+            normalized_coords = tuple((round(x, 5), round(y, 5)) for x, y in coords)
+            return cls(geom.geom_type.upper(), normalized_coords)
+        except:
+            # If parsing fails, create a fallback representation
+            return cls("UNKNOWN", ((hash(wkt_string),),))
+
+    @classmethod
+    def from_geojson(cls, geojson_dict: dict) -> 'GeometryComparator':
+        """Create GeometryComparator from GeoJSON dictionary."""
+        try:
+            if 'type' in geojson_dict and 'coordinates' in geojson_dict:
+                geom_type = geojson_dict['type'].upper()
+                coords = geojson_dict['coordinates']
+
+                # Normalize coordinates based on geometry type
+                if geom_type == 'POINT':
+                    normalized_coords = ((round(coords[0], 5), round(coords[1], 5)),)
+                elif geom_type == 'LINESTRING':
+                    normalized_coords = tuple((round(x, 5), round(y, 5)) for x, y in coords)
+                elif geom_type == 'POLYGON':
+                    # Take exterior ring
+                    normalized_coords = tuple((round(x, 5), round(y, 5)) for x, y in coords[0])
+                else:
+                    # Fallback for complex geometries
+                    normalized_coords = ((hash(str(coords)),),)
+
+                return cls(geom_type, normalized_coords)
+            else:
+                return cls("UNKNOWN", ((hash(str(geojson_dict)),),))
+        except:
+            return cls("UNKNOWN", ((hash(str(geojson_dict)),),))
+
+def create_geometry_comparator(value):
+    """Factory function to create appropriate geometry comparator."""
+    if isinstance(value, str):
+        # Check if it looks like WKT
+        if value.upper().startswith(('POINT', 'LINESTRING', 'POLYGON', 'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON')):
+            return GeometryComparator.from_wkt(value)
+    elif isinstance(value, dict):
+        # Check if it looks like GeoJSON
+        if 'type' in value and 'coordinates' in value:
+            return GeometryComparator.from_geojson(value)
+
+    # Return the original value if not a recognizable geometry
+    return value
+
 load_dotenv()
 
 bq_workflows_temp = f"`{os.getenv('BQ_TEST_PROJECT')}.{os.getenv('BQ_TEST_DATASET')}`"
@@ -36,7 +107,6 @@ sf_workflows_temp = f"{os.getenv('SF_TEST_DATABASE')}.{os.getenv('SF_TEST_SCHEMA
 
 sf_client_instance = None
 bq_client_instance = None
-
 
 def bq_client():
     global bq_client_instance
@@ -46,7 +116,6 @@ def bq_client():
         except Exception as e:
             raise Exception(f"Error connecting to BigQuery: {e}")
     return bq_client_instance
-
 
 def sf_client():
     global sf_client_instance
@@ -63,12 +132,10 @@ def sf_client():
             raise Exception(f"Error connecting to SnowFlake: {e}")
     return sf_client_instance
 
-
 def add_namespace_to_component_names(metadata):
     for component in metadata["components"]:
         component["name"] = f'{metadata["name"]}.{component["name"]}'
     return metadata
-
 
 def _encode_image(image_path):
     if not os.path.exists(image_path):
@@ -80,7 +147,6 @@ def _encode_image(image_path):
             return f"data:image/svg+xml;base64,{base64.b64encode(f.read()).decode('utf-8')}"
         else:
             return f"data:image/png;base64,{base64.b64encode(f.read()).decode('utf-8')}"
-
 
 def create_metadata():
     current_folder = os.path.dirname(os.path.abspath(__file__))
@@ -119,7 +185,6 @@ def create_metadata():
 
     metadata["components"] = components
     return metadata
-
 
 def get_procedure_code_bq(component):
     current_folder = os.path.dirname(os.path.abspath(__file__))
@@ -175,7 +240,6 @@ def get_procedure_code_bq(component):
     )
     return procedure_code
 
-
 def get_functions_code(dir: Path = Path("functions/")):
     """Generate code to declare additonal UDFs to the package.
 
@@ -195,7 +259,6 @@ def get_functions_code(dir: Path = Path("functions/")):
 
     code =  "\n\n".join(udfs)
     return code
-
 
 def create_sql_code_bq(metadata):
     functions_code = get_functions_code()
@@ -253,7 +316,6 @@ def create_sql_code_bq(metadata):
     )
 
     return dedent(code)
-
 
 def get_procedure_code_sf(component):
     current_folder = os.path.dirname(os.path.abspath(__file__))
@@ -320,7 +382,6 @@ def get_procedure_code_sf(component):
     )
     return procedure_code
 
-
 def create_sql_code_sf(metadata):
     functions_code = get_functions_code()
 
@@ -378,7 +439,6 @@ def create_sql_code_sf(metadata):
 
     return code
 
-
 def deploy_bq(metadata, destination):
     print("Deploying extension to BigQuery...")
     destination = f"`{destination}`" if destination else bq_workflows_temp
@@ -390,7 +450,6 @@ def deploy_bq(metadata, destination):
     query_job = bq_client().query(sql_code)
     query_job.result()
     print("Extension correctly deployed to BigQuery.")
-
 
 def deploy_sf(metadata, destination):
     print("Deploying extension to SnowFlake...")
@@ -405,14 +464,12 @@ def deploy_sf(metadata, destination):
     cur.execute(sql_code)
     print("Extension correctly deployed to SnowFlake.")
 
-
 def deploy(destination):
     metadata = create_metadata()
     if metadata["provider"] == "bigquery":
         deploy_bq(metadata, destination)
     else:
         deploy_sf(metadata, destination)
-
 
 def substitute_vars(text: str) -> str:
     """Substitute all variables in a string with their values from the environment.
@@ -432,7 +489,6 @@ def substitute_vars(text: str) -> str:
 
     return text
 
-
 def substitute_keys(text: str, dotenv: dict[str, str]) -> str:
     """Substitute all variables in the .env file with their key.
 
@@ -446,7 +502,6 @@ def substitute_keys(text: str, dotenv: dict[str, str]) -> str:
             text = text.replace(value, f"@@{key}@@")
 
     return text
-
 
 def infer_schema_field_bq(key: str, value: Any, from_array: bool=False) -> bigquery.SchemaField:
     kwargs = dict()
@@ -531,7 +586,6 @@ def _upload_test_table_bq(filename, component):
     except Exception as e:
         pass
 
-
 def infer_schema_field_sf(key: str, value: Any) -> str:
     if isinstance(value, int):
         return "NUMBER"
@@ -561,7 +615,6 @@ def infer_schema_field_sf(key: str, value: Any) -> str:
     else:
         # Fallback for unknown types
         return "VARCHAR"
-
 
 def _upload_test_table_sf(filename, component):
     import tempfile
@@ -657,7 +710,6 @@ def _upload_test_table_sf(filename, component):
             cursor.execute(insert_sql, params)
 
     cursor.close()
-
 
 def _get_test_results(metadata, component, progress_bar=None):
     if metadata["provider"] == "bigquery":
@@ -814,7 +866,6 @@ def _run_query(statements: list, component: dict, provider: str, tables: dict) -
 
     return results
 
-
 def test(component):
     print("Testing extension...")
     metadata = create_metadata()
@@ -858,7 +909,6 @@ def test(component):
                         )
 
     print("Extension correctly tested.")
-
 
 # Pytest-based testing functions
 _test_results_cache = None
@@ -1017,7 +1067,6 @@ def run_pytest_tests():
         if 'PYTEST_TEST_DATA_FILE' in os.environ:
             del os.environ['PYTEST_TEST_DATA_FILE']
 
-
 def dataframe_to_dict(df: pd.DataFrame) -> dict[str, Any]:
     """Uniformly convert a pandas DataFrame to a neste structure.
 
@@ -1040,7 +1089,6 @@ def dataframe_to_dict(df: pd.DataFrame) -> dict[str, Any]:
     output = df.to_dict(orient="records")
     return output
 
-
 def check_schema(dry_result, full_result) -> bool:
     """Compare two different DataFrames two have the same columns."""
     dry_schema = dry_result.dtypes.astype(str).to_dict()
@@ -1052,7 +1100,6 @@ def check_schema(dry_result, full_result) -> bool:
             print(f"{dry_schema.keys()=}")
             print(f"{full_schema.keys()=}")
         return False
-
 
 def normalize_json(original, decimal_places=3):
     """Ensure that the input for a test is in an uniform format.
@@ -1077,8 +1124,13 @@ def normalize_json(original, decimal_places=3):
 
 def normalize_element(value, decimal_places=3):
     """Format a single scalar value in the desired format."""
+    # Try to create geometry comparator first
+    geom_comparator = create_geometry_comparator(value)
+    if isinstance(geom_comparator, GeometryComparator):
+        return geom_comparator
+
     if isinstance(value, dict) or isinstance(value, list):
-        return sorted(map(normalize_element, value))
+        return sorted(map(lambda x: normalize_element(x, decimal_places), value))
     elif isinstance(value, float) and math.isnan(value):
         return "nan"
     elif isinstance(value, float):
@@ -1087,7 +1139,6 @@ def normalize_element(value, decimal_places=3):
         return "None"
     else:
         return value
-
 
 def _sorted_json(data):
     """Recursively sort JSON-like structures (lists of dicts) to enable consistent ordering."""
@@ -1101,12 +1152,10 @@ def _sorted_json(data):
     else:
         return data
 
-
 def test_output(expected, result, decimal_places=3):
     expected = normalize_json(_sorted_json(expected), decimal_places=decimal_places)
     result = normalize_json(_sorted_json(result), decimal_places=decimal_places)
     return expected == result
-
 
 def capture(component):
     print("Capturing fixtures... ")
@@ -1134,7 +1183,6 @@ def capture(component):
 
     print("Fixtures correctly captured.")
 
-
 def package():
     print("Packaging extension...")
     current_folder = os.path.dirname(os.path.abspath(__file__))
@@ -1157,11 +1205,9 @@ def package():
 
     print(f"Extension correctly packaged to '{package_filename}' file.")
 
-
 def update():
     download_file("carto_extension.py", os.getcwd())
     download_file("requirements.txt", os.getcwd())
-
 
 def download_file(
     path_to_file: str,
@@ -1177,7 +1223,6 @@ def download_file(
     os.replace(tmp_path, complete_path)
 
     print(f"Downloaded {complete_url} to {complete_path}")
-
 
 def _param_type_to_bq_type(param_type):
     if param_type in [
@@ -1205,7 +1250,6 @@ def _param_type_to_bq_type(param_type):
     else:
         raise ValueError(f"Parameter type '{param_type}' not supported")
 
-
 def _param_type_to_sf_type(param_type):
     if param_type in [
         "Table",
@@ -1231,7 +1275,6 @@ def _param_type_to_sf_type(param_type):
         return ["BOOLEAN"]
     else:
         raise ValueError(f"Parameter type '{param_type}' not supported")
-
 
 def check():
     print("Checking extension...")
@@ -1265,7 +1308,6 @@ def check():
         assert field in metadata, f"Extension metadata is missing field '{field}'"
 
     print("Extension correctly checked. No errors found.")
-
 
 parser = argparse.ArgumentParser()
 parser.add_argument(

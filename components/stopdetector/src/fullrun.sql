@@ -18,7 +18,7 @@ $$
                 SELECT
                     ${TRAJ_ID_COL},
                     p.value:stop_id::STRING as stop_id,
-                    ST_ASWKT(ST_GEOGRAPHYFROMWKT(p.value:geometry::STRING)) AS geom,
+                    ST_GEOGRAPHYFROMWKT(p.value:geometry::STRING) AS geom,
                     p.value:start_time::TIMESTAMP as start_time,
                     p.value:end_time::TIMESTAMP as end_time,
                     p.value:duration_s::FLOAT as duration_s
