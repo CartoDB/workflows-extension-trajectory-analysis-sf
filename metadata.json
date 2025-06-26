@@ -25,6 +25,7 @@
     "components": [
         "frompoints",
         "trajectorysplitter",
-        "stopdetector"
+        "stopdetector",
+        "topoints"
     ]
 }

@@ -1,0 +1,47 @@
+{
+    "name": "topoints",
+    "title": "Trajectory to Points",
+    "description": "Convert trajectories to a point-by-point output",
+    "version": "1.0.0",
+    "icon": "trajectory_to_points.svg",
+    "cartoEnvVars": [],
+    "inputs": [
+        {
+            "name": "input_table",
+            "title": "Trajectories table",
+            "description": "Table containing the trajectories",
+            "type": "Table"
+        },
+        {
+            "name": "input_traj_id_column",
+            "title": "Trajectory IDs column",
+            "description": "Column containing the trajectory IDs",
+            "type": "Column",
+            "parent": "input_table",
+            "noDefault": true
+        },
+        {
+            "name": "input_tpoints_column",
+            "title": "Trajectory points column",
+            "description": "Column containing the points for each trajectory",
+            "type": "Column",
+            "parent": "input_table",
+            "noDefault": true
+        },
+        {
+            "name": "output_lines",
+            "title": "Return step-by-step lines",
+            "description": "Activate to return step-by-step lines",
+            "type": "Boolean",
+            "default": true
+        }  
+    ],
+    "outputs": [
+        {
+            "name": "output_table",
+            "title": "Output table",
+            "description": "The table with the transformed data",
+            "type": "Table"
+        }
+    ]
+}
