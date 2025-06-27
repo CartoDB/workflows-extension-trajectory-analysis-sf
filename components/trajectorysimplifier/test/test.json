@@ -1,0 +1,35 @@
+[
+    {
+        "id": 1,
+        "inputs": {
+            "input_table": "trajectories",
+            "traj_id_col": "traj_id",
+            "tpoints_col": "tpoints",
+            "tolerance": 0,
+            "rounding_precision":10
+        },
+        "test_sorting": false
+    },
+    {
+        "id": 2,
+        "inputs": {
+            "input_table": "trajectories",
+            "traj_id_col": "traj_id",
+            "tpoints_col": "tpoints",
+            "tolerance": 10,
+            "rounding_precision":10
+        },
+        "test_sorting": false
+    },
+    {
+        "id": 3,
+        "inputs": {
+            "input_table": "trajectories_with_extra_column",
+            "traj_id_col": "traj_id",
+            "tpoints_col": "tpoints",
+            "tolerance": 0,
+            "rounding_precision":10
+        },
+        "test_sorting": false
+    }
+]

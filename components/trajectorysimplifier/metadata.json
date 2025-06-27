@@ -1,0 +1,58 @@
+{
+    "name": "trajectorysimplifier",
+    "title": "Simplify Trajectories",
+    "description": "Simplify trajectory by reducing the number of points stored without losing any information",
+    "version": "1.0.0",
+    "icon": "trajectory_simplification.svg",
+    "cartoEnvVars": [],
+    "inputs": [
+        {
+            "name": "input_table",
+            "title": "Trajectories table",
+            "description": "Table containing the trajectories",
+            "type": "Table"
+        },
+        {
+            "name": "traj_id_col",
+            "title": "Trajectory IDs column",
+            "description": "Column containing the trajectory IDs",
+            "type": "Column",
+            "parent": "input_table",
+            "noDefault": "true",
+            "optional": false
+        },
+        {
+            "name": "tpoints_col",
+            "title": "Trajectory points column",
+            "description": "Column containing the points for each trajectory",
+            "type": "Column",
+            "parent": "input_table",
+            "noDefault": "true",
+            "optional": false
+        },
+        {
+            "name": "tolerance",
+            "title": "Tolerance",
+            "description": "Tolerance to use when simplifying the route",
+            "type": "Number",
+            "default": 0,
+            "optional": true
+        },
+        {
+            "name": "rounding_precision",
+            "title": "Rounding precision",
+            "description": "Decimal precision to be used when rounding the coordinates",
+            "type": "Number",
+            "default": 10,
+            "optional": true
+        }
+    ],
+    "outputs": [
+        {
+            "name": "output_table",
+            "title": "Output table",
+            "description": "The table with the simplified trajectories",
+            "type": "Table"
+        }
+    ]
+}
