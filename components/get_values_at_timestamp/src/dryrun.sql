@@ -1,0 +1,25 @@
+CREATE OR REPLACE TEMP FUNCTION _GET_VALUES_AT_TIMESTAMP_DRYRUN_QUERY(
+    TRAJ_ID_COL STRING,
+    OUTPUT_TABLE STRING
+)
+RETURNS STRING NOT NULL
+LANGUAGE JAVASCRIPT
+AS
+$$
+    return `
+        CREATE OR REPLACE TABLE ${OUTPUT_TABLE} (
+            ${TRAJ_ID_COL} STRING,
+            t TIMESTAMP,
+            geom GEOGRAPHY
+        ) AS (
+            SELECT * FROM VALUES 
+            (NULL, NULL, NULL)
+            WHERE FALSE
+        )
+    `;
+$$;
+
+EXECUTE IMMEDIATE _GET_VALUES_AT_TIMESTAMP_DRYRUN_QUERY(
+    :traj_id_col,
+    :output_table
+);
