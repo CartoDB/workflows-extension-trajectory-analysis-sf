@@ -876,9 +876,22 @@ def test(component):
 
     for component in metadata["components"]:
         component_folder = os.path.join(components_folder, component["name"])
+
+        # Load test configuration to get test_sorting parameter
+        # TODO: this new read could be avoided
+        test_configuration_file = os.path.join(component_folder, "test", "test.json")
+        with open(test_configuration_file, "r") as f:
+            test_configurations = json.loads(substitute_vars(f.read()))
+
+        # Create a mapping of test_id to test configuration
+        test_config_map = {str(config["id"]): config for config in test_configurations}
+
         for test_id, outputs in results[component["name"]].items():
             test_folder = os.path.join(component_folder, "test", "fixtures")
             test_filename = os.path.join(test_folder, f"{test_id}.json")
+
+            # Get test configuration for this test_id
+            test_config = test_config_map.get(str(test_id), {})
 
             zipped_outputs = [
                 (output_name, dry_output, outputs["full"][output_name])
@@ -901,9 +914,24 @@ def test(component):
             # Test that the results match the expected ones
             with open(test_filename, "r") as f:
                 expected = json.loads(substitute_vars(f.read()))
+
+                # Check if test_sorting is enabled (default True)
+                test_sorting = test_config.get("test_sorting", True)
+
                 for output_name, test_result_df in outputs["full"].items():
                     output = dataframe_to_dict(test_result_df)
-                    if not test_output(expected[output_name], output, decimal_places=3):
+                    expected_output = expected[output_name]
+
+                    # Normalize first
+                    output = normalize_json(output, decimal_places=3)
+                    expected_output = normalize_json(expected_output, decimal_places=3)
+
+                    # Apply sorting after normalization when test_sorting is False
+                    if not test_sorting:
+                        output = _sorted_json(output)
+                        expected_output = _sorted_json(expected_output)
+
+                    if output != expected_output:
                         raise AssertionError(
                             f"Test '{test_id}' failed for component {component['name']} and table {output_name}."
                         )
@@ -965,9 +993,22 @@ def load_test_cases():
 
     for component in metadata_cache["components"]:
         component_folder = os.path.join(components_folder, component["name"])
+
+        # Load test configuration to get test_sorting parameter
+        test_configuration_file = os.path.join(component_folder, "test", "test.json")
+        with open(test_configuration_file, "r") as f:
+            test_configurations = json.loads(substitute_vars(f.read()))
+
+        # Create a mapping of test_id to test configuration
+        test_config_map = {str(config["id"]): config for config in test_configurations}
+
         for test_id, outputs in test_results_cache[component["name"]].items():
             test_folder = os.path.join(component_folder, "test", "fixtures")
             test_filename = os.path.join(test_folder, f"{test_id}.json")
+
+            # Get test configuration for this test_id
+            test_config = test_config_map.get(str(test_id), {})
+            test_sorting = test_config.get("test_sorting", True)
 
             # Schema test case
             test_cases.append({
@@ -975,6 +1016,7 @@ def load_test_cases():
                 "component": component,
                 "test_id": test_id,
                 "outputs": outputs,
+                "test_sorting": test_sorting,
                 "test_name": f"schema_{component['name']}_{test_id}"
             })
 
@@ -986,6 +1028,7 @@ def load_test_cases():
                     "test_id": test_id,
                     "outputs": outputs,
                     "test_filename": test_filename,
+                    "test_sorting": test_sorting,
                     "test_name": f"results_{component['name']}_{test_id}"
                 })
 
@@ -1016,20 +1059,19 @@ def test_extension_components(test_case):
 
         for output_name, test_result_df in test_case["outputs"]["full"].items():
             output = dataframe_to_dict(test_result_df)
-            expected_normalized = normalize_json(_sorted_json(expected[output_name]), decimal_places=3)
-            result_normalized = normalize_json(_sorted_json(output), decimal_places=3)
+            expected_output = expected[output_name]
 
-            # First check lengths to give pytest a chance to show meaningful diff
-            assert len(result_normalized) == len(expected_normalized), (
-                f"Row count mismatch in {test_case['component']['name']} - {test_case['test_id']} - {output_name}: "
-                f"expected {len(expected_normalized)} rows, got {len(result_normalized)} rows"
-            )
+            # Normalize first
+            expected_normalized = normalize_json(expected_output, decimal_places=3)
+            result_normalized = normalize_json(output, decimal_places=3)
 
-            # Then compare record by record for better pytest diff output
-            for i, (actual_record, expected_record) in enumerate(zip(result_normalized, expected_normalized)):
-                assert actual_record == expected_record, (
-                    f"Record {i} mismatch in {test_case['component']['name']} - {test_case['test_id']} - {output_name}"
-                )
+            # Apply sorting after normalization when test_sorting is False
+            if not test_case["test_sorting"]:
+                expected_normalized = _sorted_json(expected_normalized)
+                result_normalized = _sorted_json(result_normalized)
+
+            # Use pytest's native comparison for better diff output
+            assert result_normalized == expected_normalized
 
 def run_pytest_tests():
     """Run the pytest-based tests."""
@@ -1152,10 +1194,7 @@ def _sorted_json(data):
     else:
         return data
 
-def test_output(expected, result, decimal_places=3):
-    expected = normalize_json(_sorted_json(expected), decimal_places=decimal_places)
-    result = normalize_json(_sorted_json(result), decimal_places=decimal_places)
-    return expected == result
+
 
 def capture(component):
     print("Capturing fixtures... ")
@@ -1167,17 +1206,38 @@ def capture(component):
     dotenv = dotenv_values()
     for component in metadata["components"]:
         component_folder = os.path.join(components_folder, component["name"])
+
+        # Load test configuration to get test_sorting parameter
+        # TODO: this new read could be avoided
+        test_configuration_file = os.path.join(component_folder, "test", "test.json")
+        with open(test_configuration_file, "r") as f:
+            test_configurations = json.loads(substitute_vars(f.read()))
+
+        # Create a mapping of test_id to test configuration
+        test_config_map = {str(config["id"]): config for config in test_configurations}
+
         for test_id, outputs in results[component["name"]].items():
             test_folder = os.path.join(component_folder, "test", "fixtures")
             os.makedirs(test_folder, exist_ok=True)
             test_filename = os.path.join(test_folder, f"{test_id}.json")
-            with open(test_filename, "w") as f:
-                outputs = {
-                    output_name: output_results.to_dict(orient="records")
-                    for output_name, output_results in outputs["full"].items()
-                }
 
-                contents = json.dumps(outputs, indent=2, default=str)
+            # Get test configuration for this test_id
+            test_config = test_config_map.get(str(test_id), {})
+            test_sorting = test_config.get("test_sorting", True)
+
+            with open(test_filename, "w") as f:
+                fixture_outputs = {}
+                for output_name, output_results in outputs["full"].items():
+                    output_dict = output_results.to_dict(orient="records")
+                    # Normalize first
+                    output_dict = normalize_json(output_dict, decimal_places=3)
+                    # When test_sorting is False, sort for consistent fixture capture
+                    # (set comparison will be used during testing)
+                    if not test_sorting:
+                        output_dict = _sorted_json(output_dict)
+                    fixture_outputs[output_name] = output_dict
+
+                contents = json.dumps(fixture_outputs, indent=2, default=str)
                 contents = substitute_keys(contents, dotenv=dotenv)
                 f.write(contents)
 

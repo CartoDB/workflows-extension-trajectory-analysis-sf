@@ -1,0 +1,69 @@
+{
+    "name": "trajectorycleaner",
+    "title": "Clean Trajectories",
+    "description": "Clean outliers in a trajectory",
+    "version": "1.0.0",
+    "icon": "trajectory_cleaner.svg",
+    "cartoEnvVars": [],
+    "inputs": [
+        {
+            "name": "input_table",
+            "title": "Trajectories table",
+            "description": "Table containing the trajectories",
+            "type": "Table"
+        },
+        {
+            "name": "traj_id_col",
+            "title": "Trajectory IDs column",
+            "description": "Column containing the trajectory IDs",
+            "type": "Column",
+            "parent": "input_table",
+            "noDefault": "true",
+            "optional": false
+        },
+        {
+            "name": "tpoints_col",
+            "title": "Trajectory points column",
+            "description": "Column containing the points for each trajectory",
+            "type": "Column",
+            "parent": "input_table",
+            "noDefault": "true",
+            "optional": false
+        },
+        {
+            "name": "speed_threshold",
+            "title": "Speed Threshold",
+            "description": "Maximum speed to consider an outlier. If the resulting trajectory is invalid (e.g. <2 points remaining), the original trajectory is returned together with a warning",
+            "type": "Number",
+            "optional": false,
+            "default": 100,
+            "min": 0
+        },
+        {
+            "name": "input_unit_distance",
+            "title": "Distance units",
+            "description": "Unit for the computation of the distance",
+            "type": "Selection",
+            "options": ["Kilometers", "Meters", "Miles", "Nautical Miles"],
+            "default": "Meters",
+            "optional": true
+        },
+        {
+            "name": "input_unit_time",
+            "title": "Time units",
+            "description": "Unit for the computation of the time",
+            "type": "Selection",
+            "options": ["Seconds", "Hours"],
+            "default": "Seconds",
+            "optional": true
+        }
+    ],
+    "outputs": [
+        {
+            "name": "output_table",
+            "title": "Output table",
+            "description": "The table with the cleaned trajectories",
+            "type": "Table"
+        }
+    ]
+}

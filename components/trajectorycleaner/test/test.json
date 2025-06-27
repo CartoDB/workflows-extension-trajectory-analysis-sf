@@ -1,0 +1,28 @@
+[
+    {
+        "id": 1,
+        "inputs": {
+            "input_table": "trajectories",
+            "traj_id_col": "traj_id",
+            "tpoints_col": "tpoints",
+            "speed_threshold": 120,
+            "input_unit_distance":"Kilometers",
+            "input_unit_time":"Hours"
+
+        },
+        "test_sorting": false
+    },
+    {
+        "id": 2,
+        "inputs": {
+            "input_table": "trajectories_single",
+            "traj_id_col": "traj_id",
+            "tpoints_col": "tpoints",
+            "speed_threshold": 0,
+            "input_unit_distance":"Kilometers",
+            "input_unit_time":"Hours"
+
+        },
+        "test_sorting": false
+    }
+]
