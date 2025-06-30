@@ -1,0 +1,132 @@
+{
+    "name": "distancefromtrajectory",
+    "title": "Distance from Trajectory",
+    "description": "Returns the minimum distance from one or more input positions to one or more trajectories.",
+    "version": "1.0.0",
+    "icon": "trajectory_get_distance_from_position.svg",
+    "cartoEnvVars": [],
+    "inputs": [
+        {
+            "name": "input_table_position",
+            "title": "Positions table",
+            "description": "Table containing the positions",
+            "type": "Table"
+        },
+        {
+            "name": "input_table",
+            "title": "Trajectories table",
+            "description": "Table containing the trajectories",
+            "type": "Table"
+        },
+        {
+            "name": "traj_id_col",
+            "title": "Trajectory IDs column",
+            "description": "Column containing the trajectory IDs",
+            "type": "Column",
+            "parent": "input_table",
+            "noDefault": "true",
+            "optional": false
+        },
+        {
+            "name": "tpoints_col",
+            "title": "Trajectory points column",
+            "description": "Column containing the points for each trajectory",
+            "type": "Column",
+            "parent": "input_table",
+            "noDefault": "true",
+            "optional": false
+        },
+        {
+            "name": "join_type",
+            "title": "Join type",
+            "description": "Defines how the trajectories and positions will be joined",
+            "helper": "If 'Key Join' is selected, the component will join the trajectories and positions using a key column. If 'Cross Join' is selected, the component will join the trajectories and positions using all the rows in the trajectories and positions tables. Using 'Cross Join' could result in a large number of rows in the output table.",
+            "type": "Selection",
+            "options": ["Key Join", "Cross Join"],
+            "default": "Key Join",
+            "optional": false
+        },
+        {
+            "name": "traj_key_col",
+            "title": "Join Key (Trajectories)",
+            "description": "Column from the Trajectories table to be used as key when joining with the positions",
+            "type": "Column",
+            "parent": "input_table",
+            "optional": false,
+            "dataType": ["number", "string"],
+            "showIf": [
+                {
+                    "parameter": "join_type",
+                    "value": "Key Join"
+                }
+            ]
+        },
+        {
+            "name": "position_key_col",
+            "title": "Join Key (Positions)",
+            "description": "Column from the Positions table to be used as key when joining with the trajectories",
+            "type": "Column",
+            "parent": "input_table_position",
+            "optional": false,
+            "dataType": ["number", "string"],
+            "showIf": [
+                {
+                    "parameter": "join_type",
+                    "value": "Key Join"
+                }
+            ]
+        },
+        {
+            "name": "position_col",
+            "title": "Position geometries column",
+            "description": "Column containing the geometries of the positions",
+            "type": "Column",
+            "parent": "input_table_position",
+            "dataType": ["geometry", "geography"],
+            "optional": false
+        },
+        {
+            "name": "return_position_properties",
+            "title": "Return position properties",
+            "description": "If enabled, the component will also return all the columns from the positions table",
+            "type": "Boolean",
+            "default": false,
+            "optional": true
+        },
+        {
+            "name": "distance_from",
+            "title": "Distance from",
+            "description": "Defines the point in the trajectory from which the distance will be computed",
+            "helper": "If 'Nearest Point' is selected, the component will compute the distance from the nearest point in the trajectory to the position. If 'First Point' is selected, the component will compute the distance from the first point in the trajectory to the position. If 'Last Point' is selected, the component will compute the distance from the last point in the trajectory to the position.",
+            "type": "Selection",
+            "options": ["Nearest Point", "First Point", "Last Point"],
+            "default": "Nearest Point",
+            "optional": false
+        },
+        {
+            "name": "distance_output_col",
+            "title": "Distance column name",
+            "description": "Name to be assigned to the output column containing the distances",
+            "type": "String",
+            "default": "distance",
+            "optional": false
+        },
+        {
+            "name": "units",
+            "title": "Distance units",
+            "description": "Unit for the computed distances",
+            "type": "Selection",
+            "options": ["Kilometers", "Meters", "Miles", "Nautical Miles"],
+            "default": "Meters"
+        }
+    ],
+    "outputs": [
+        {
+            "name": "output_table",
+            "title": "Output table",
+            "description": "The table with the computed distances",
+            "type": "Table"
+        }
+    ]
+}
+ 
