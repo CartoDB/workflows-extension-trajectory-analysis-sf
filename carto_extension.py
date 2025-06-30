@@ -33,58 +33,58 @@ verbose = False
 from dataclasses import dataclass
 from typing import Tuple, List, Union
 
-@dataclass(frozen=True)
 class GeometryComparator:
-    """Unified geometry comparator for WKT and GeoJSON formats."""
-    geom_type: str
-    coordinates: Tuple[Tuple[float, float], ...]
+    """Unified geometry comparator using shapely directly."""
+    
+    def __init__(self, shapely_geom):
+        """Initialize with a shapely geometry object."""
+        self._shapely_geom = shapely_geom
 
     @classmethod
     def from_wkt(cls, wkt_string: str) -> 'GeometryComparator':
         """Create GeometryComparator from WKT string."""
         try:
             geom = wkt.loads(wkt_string)
-            if hasattr(geom, 'coords'):
-                # Point, LineString
-                coords = list(geom.coords)
-            elif hasattr(geom, 'exterior'):
-                # Polygon
-                coords = list(geom.exterior.coords)
-            else:
-                coords = []
-
-            # Round coordinates to 5 decimal places for comparison
-            normalized_coords = tuple((round(x, 5), round(y, 5)) for x, y in coords)
-            return cls(geom.geom_type.upper(), normalized_coords)
-        except:
-            # If parsing fails, create a fallback representation
-            return cls("UNKNOWN", ((hash(wkt_string),),))
+            return cls(geom)
+        except Exception as e:
+            print(f"ERROR: Failed to parse WKT string: '{wkt_string}'")
+            print(f"ERROR: Exception: {e}")
+            raise
 
     @classmethod
     def from_geojson(cls, geojson_dict: dict) -> 'GeometryComparator':
         """Create GeometryComparator from GeoJSON dictionary."""
         try:
-            if 'type' in geojson_dict and 'coordinates' in geojson_dict:
-                geom_type = geojson_dict['type'].upper()
-                coords = geojson_dict['coordinates']
-
-                # Normalize coordinates based on geometry type
-                if geom_type == 'POINT':
-                    normalized_coords = ((round(coords[0], 5), round(coords[1], 5)),)
-                elif geom_type == 'LINESTRING':
-                    normalized_coords = tuple((round(x, 5), round(y, 5)) for x, y in coords)
-                elif geom_type == 'POLYGON':
-                    # Take exterior ring
-                    normalized_coords = tuple((round(x, 5), round(y, 5)) for x, y in coords[0])
-                else:
-                    # Fallback for complex geometries
-                    normalized_coords = ((hash(str(coords)),),)
-
-                return cls(geom_type, normalized_coords)
-            else:
-                return cls("UNKNOWN", ((hash(str(geojson_dict)),),))
-        except:
-            return cls("UNKNOWN", ((hash(str(geojson_dict)),),))
+            from shapely.geometry import shape
+            geom = shape(geojson_dict)
+            return cls(geom)
+        except Exception as e:
+            print(f"ERROR: Failed to parse GeoJSON: {geojson_dict}")
+            print(f"ERROR: Exception: {e}")
+            raise
+    
+    def to_wkt(self) -> str:
+        """Convert GeometryComparator back to WKT string."""
+        return self._shapely_geom.wkt
+    
+    @property
+    def geom_type(self) -> str:
+        """Get geometry type."""
+        return self._shapely_geom.geom_type
+    
+    def __eq__(self, other):
+        """Compare geometries using shapely's equals method."""
+        if not isinstance(other, GeometryComparator):
+            return False
+        return self._shapely_geom.equals(other._shapely_geom)
+    
+    def __hash__(self):
+        """Hash based on WKT representation."""
+        return hash(self._shapely_geom.wkt)
+    
+    def __repr__(self):
+        """String representation."""
+        return f"GeometryComparator({self._shapely_geom.wkt})"
 
 def create_geometry_comparator(value):
     """Factory function to create appropriate geometry comparator."""
@@ -605,11 +605,17 @@ def infer_schema_field_sf(key: str, value: Any) -> str:
         elif key.endswith("datetime"):
             return "DATETIME"
         else:
-            try:
-                wkt.loads(value)
-                return "GEOGRAPHY"
-            except Exception:
+            # FIXME: Handle specific geometry column names and WKT parsing issues
+            if "polygon" in key.lower() or "geom" in key.lower() or "geometry" in key.lower():
+                # FIXME: Force polygon columns to VARCHAR to avoid GEOGRAPHY conversion issues
+                # The trajectory intersection function expects WKT strings, not GEOGRAPHY type
                 return "VARCHAR"
+            else:
+                try:
+                    wkt.loads(value)
+                    return "GEOGRAPHY"
+                except Exception:
+                    return "VARCHAR"
     elif value is None:
         return "VARCHAR"  # Default for null values
     else:
@@ -931,7 +937,8 @@ def test(component):
                         output = _sorted_json(output)
                         expected_output = _sorted_json(expected_output)
 
-                    if output != expected_output:
+                    from pytest_unordered import unordered
+                    if output != unordered(expected_output):
                         raise AssertionError(
                             f"Test '{test_id}' failed for component {component['name']} and table {output_name}."
                         )
@@ -1070,8 +1077,9 @@ def test_extension_components(test_case):
                 expected_normalized = _sorted_json(expected_normalized)
                 result_normalized = _sorted_json(result_normalized)
 
-            # Use pytest's native comparison for better diff output
-            assert result_normalized == expected_normalized
+            # Use unordered comparison for order-independent testing
+            from pytest_unordered import unordered
+            assert result_normalized == unordered(expected_normalized)
 
 def run_pytest_tests():
     """Run the pytest-based tests."""
@@ -1151,7 +1159,13 @@ def normalize_json(original, decimal_places=3):
     """
     # GOTCHA: dump and load to pass all values through the JSON parser, to
     # prevent any mismatch in types that cannot be inferred (i.e. Timestamp)
-    original = json.loads(json.dumps(original, default=str))
+    # But first, convert any GeometryComparator objects to WKT strings
+    def serialize_with_geom(obj):
+        if isinstance(obj, GeometryComparator):
+            return obj.to_wkt()
+        return str(obj)
+    
+    original = json.loads(json.dumps(original, default=serialize_with_geom))
 
     processed = list()
     for row in _sorted_json(original):
@@ -1169,10 +1183,12 @@ def normalize_element(value, decimal_places=3):
     # Try to create geometry comparator first
     geom_comparator = create_geometry_comparator(value)
     if isinstance(geom_comparator, GeometryComparator):
-        return geom_comparator
+        return geom_comparator.to_wkt()
 
-    if isinstance(value, dict) or isinstance(value, list):
-        return sorted(map(lambda x: normalize_element(x, decimal_places), value))
+    if isinstance(value, dict):
+        return {key: normalize_element(val, decimal_places) for key, val in value.items()}
+    elif isinstance(value, list):
+        return [normalize_element(x, decimal_places) for x in value]
     elif isinstance(value, float) and math.isnan(value):
         return "nan"
     elif isinstance(value, float):
@@ -1183,14 +1199,12 @@ def normalize_element(value, decimal_places=3):
         return value
 
 def _sorted_json(data):
-    """Recursively sort JSON-like structures (lists of dicts) to enable consistent ordering."""
+    """Recursively sort JSON-like structures (dicts only) to enable consistent ordering."""
     if isinstance(data, dict):
         return {key: _sorted_json(data[key]) for key in sorted(data)}
     elif isinstance(data, list):
-        return sorted(
-            (_sorted_json(item) for item in data),
-            key=(lambda j: json.dumps(j, default=str))
-        )
+        # Preserve all list order (important for trajectories and result rows)
+        return [_sorted_json(item) for item in data]
     else:
         return data
 

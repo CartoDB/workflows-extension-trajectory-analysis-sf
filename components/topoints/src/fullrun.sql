@@ -25,7 +25,7 @@ $$
                     FROM CTE,
                     LATERAL FLATTEN(input => ${INPUT_TPOINTS_COLUMN}) AS p
                 )
-                SELECT * FROM unnested_points
+                SELECT * FROM unnested_points ORDER BY ${INPUT_TRAJ_ID_COLUMN}, t
             )
         `;
     } else {
@@ -63,7 +63,7 @@ $$
                     JOIN numbered_points p2
                     ON p1.${INPUT_TRAJ_ID_COLUMN} = p2.${INPUT_TRAJ_ID_COLUMN} AND p1.rn + 1 = p2.rn
                 )
-                SELECT * FROM segments
+                SELECT * FROM segments ORDER BY ${INPUT_TRAJ_ID_COLUMN}, t_start
             )
         `;
     }

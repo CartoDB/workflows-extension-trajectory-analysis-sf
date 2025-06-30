@@ -36,7 +36,7 @@ $$
                             't', REPLACE(p.value:t::STRING, ' UTC', '')::TIMESTAMP,
                             'properties', p.value:properties::STRING
                         )
-                    ) WITHIN GROUP (ORDER BY p.value:t::TIMESTAMP) AS tpoints
+                    ) WITHIN GROUP (ORDER BY REPLACE(p.value:t::STRING, ' UTC', '')::TIMESTAMP) AS tpoints
                 FROM ${INPUT_TABLE},
                 LATERAL FLATTEN(input => @@workflows_temp@@.TRAJECTORY_METRICS(
                     ${INPUT_TRAJ_ID_COLUMN},

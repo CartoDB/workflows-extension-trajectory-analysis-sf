@@ -3,12 +3,12 @@
     {
       "logs": "Passing a BlockManager to GeoDataFrame is deprecated and will raise in a future version. Use public APIs instead.",
       "tpoints": [
-        [
-          "lat",
-          "lon",
-          "properties",
-          "t"
-        ]
+        {
+          "lat": 41.147,
+          "lon": -8.622,
+          "properties": "{}",
+          "t": "2013-11-07 09:37:53.000"
+        }
       ],
       "traj_id": "1383817073620000576"
     }

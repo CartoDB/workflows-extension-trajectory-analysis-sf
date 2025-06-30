@@ -1,886 +1,382 @@
 {
   "output_table": [
     {
-      "traj_id": "1392463543620000658",
-      "geom_start": {
-        "coordinates": [
-          -8.610678,
-          41.145246
-        ],
-        "type": "Point"
+      "geom": "LINESTRING(-8.61068 41.14525, -8.6109 41.14533)",
+      "geom_end": "POINT(-8.6109 41.14533)",
+      "geom_start": "POINT(-8.61068 41.14525)",
+      "properties_end": {
+        "bearing": 186.891,
+        "speed": 89.518,
+        "temperature": 13.802
       },
-      "t_start": "2014-02-15 11:25:43",
       "properties_start": {
-        "speed": 84.26663761583517,
-        "bearing": 259.0748158568304,
-        "temperature": 15.521666645575507
-      },
-      "geom_end": {
-        "coordinates": [
-          -8.610903,
-          41.145327
-        ],
-        "type": "Point"
+        "bearing": 259.075,
+        "speed": 84.267,
+        "temperature": 15.522
       },
       "t_end": "2014-02-15 11:25:58",
-      "properties_end": {
-        "speed": 89.51763534869487,
-        "bearing": 186.89098127149734,
-        "temperature": 13.802250519675537
-      },
-      "geom": {
-        "coordinates": [
-          [
-            -8.610678,
-            41.145246
-          ],
-          [
-            -8.610903,
-            41.145327
-          ]
-        ],
-        "type": "LineString"
-      }
+      "t_start": "2014-02-15 11:25:43",
+      "traj_id": "1392463543620000658"
     },
     {
-      "traj_id": "1392463543620000658",
-      "geom_start": {
-        "coordinates": [
-          -8.610903,
-          41.145327
-        ],
-        "type": "Point"
+      "geom": "LINESTRING(-8.6109 41.14533, -8.61078 41.14587)",
+      "geom_end": "POINT(-8.61078 41.14587)",
+      "geom_start": "POINT(-8.6109 41.14533)",
+      "properties_end": {
+        "bearing": 339.72,
+        "speed": 32.993,
+        "temperature": 15.323
       },
-      "t_start": "2014-02-15 11:25:58",
       "properties_start": {
-        "speed": 89.51763534869487,
-        "bearing": 186.89098127149734,
-        "temperature": 13.802250519675537
-      },
-      "geom_end": {
-        "coordinates": [
-          -8.610777,
-          41.145867
-        ],
-        "type": "Point"
+        "bearing": 186.891,
+        "speed": 89.518,
+        "temperature": 13.802
       },
       "t_end": "2014-02-15 11:26:13",
-      "properties_end": {
-        "speed": 32.99321323510955,
-        "bearing": 339.7202411020653,
-        "temperature": 15.323269739523138
-      },
-      "geom": {
-        "coordinates": [
-          [
-            -8.610903,
-            41.145327
-          ],
-          [
-            -8.610777,
-            41.145867
-          ]
-        ],
-        "type": "LineString"
-      }
+      "t_start": "2014-02-15 11:25:58",
+      "traj_id": "1392463543620000658"
     },
     {
-      "traj_id": "1392463543620000658",
-      "geom_start": {
-        "coordinates": [
-          -8.610777,
-          41.145867
-        ],
-        "type": "Point"
+      "geom": "LINESTRING(-8.61078 41.14587, -8.61037 41.14616)",
+      "geom_end": "POINT(-8.61037 41.14616)",
+      "geom_start": "POINT(-8.61078 41.14587)",
+      "properties_end": {
+        "bearing": 294.594,
+        "speed": 59.04,
+        "temperature": 32.357
       },
-      "t_start": "2014-02-15 11:26:13",
       "properties_start": {
-        "speed": 32.99321323510955,
-        "bearing": 339.7202411020653,
-        "temperature": 15.323269739523138
-      },
-      "geom_end": {
-        "coordinates": [
-          -8.610372,
-          41.14615500000001
-        ],
-        "type": "Point"
+        "bearing": 339.72,
+        "speed": 32.993,
+        "temperature": 15.323
       },
       "t_end": "2014-02-15 11:26:28",
-      "properties_end": {
-        "speed": 59.03986208525397,
-        "bearing": 294.59428011709514,
-        "temperature": 32.35681653368437
-      },
-      "geom": {
-        "coordinates": [
-          [
-            -8.610777,
-            41.145867
-          ],
-          [
-            -8.610372,
-            41.14615500000001
-          ]
-        ],
-        "type": "LineString"
-      }
+      "t_start": "2014-02-15 11:26:13",
+      "traj_id": "1392463543620000658"
     },
     {
-      "traj_id": "1392463543620000658",
-      "geom_start": {
-        "coordinates": [
-          -8.610372,
-          41.14615500000001
-        ],
-        "type": "Point"
+      "geom": "LINESTRING(-8.61037 41.14616, -8.60922 41.14674)",
+      "geom_end": "POINT(-8.60922 41.14674)",
+      "geom_start": "POINT(-8.61037 41.14616)",
+      "properties_end": {
+        "bearing": 236.243,
+        "speed": 61.885,
+        "temperature": 11.521
       },
-      "t_start": "2014-02-15 11:26:28",
       "properties_start": {
-        "speed": 59.03986208525397,
-        "bearing": 294.59428011709514,
-        "temperature": 32.35681653368437
-      },
-      "geom_end": {
-        "coordinates": [
-          -8.60922,
-          41.14674000000001
-        ],
-        "type": "Point"
+        "bearing": 294.594,
+        "speed": 59.04,
+        "temperature": 32.357
       },
       "t_end": "2014-02-15 11:26:43",
-      "properties_end": {
-        "speed": 61.88544946956165,
-        "bearing": 236.24294895278302,
-        "temperature": 11.520978618557423
-      },
-      "geom": {
-        "coordinates": [
-          [
-            -8.610372,
-            41.14615500000001
-          ],
-          [
-            -8.60922,
-            41.14674000000001
-          ]
-        ],
-        "type": "LineString"
-      }
+      "t_start": "2014-02-15 11:26:28",
+      "traj_id": "1392463543620000658"
     },
     {
-      "traj_id": "1392463543620000658",
-      "geom_start": {
-        "coordinates": [
-          -8.60922,
-          41.14674000000001
-        ],
-        "type": "Point"
+      "geom": "LINESTRING(-8.60922 41.14674, -8.60867 41.14733)",
+      "geom_end": "POINT(-8.60867 41.14733)",
+      "geom_start": "POINT(-8.60922 41.14674)",
+      "properties_end": {
+        "bearing": 16.066,
+        "speed": 32.992,
+        "temperature": 43.978
       },
-      "t_start": "2014-02-15 11:26:43",
       "properties_start": {
-        "speed": 61.88544946956165,
-        "bearing": 236.24294895278302,
-        "temperature": 11.520978618557423
-      },
-      "geom_end": {
-        "coordinates": [
-          -8.608671,
-          41.14733399999999
-        ],
-        "type": "Point"
+        "bearing": 236.243,
+        "speed": 61.885,
+        "temperature": 11.521
       },
       "t_end": "2014-02-15 11:26:58",
-      "properties_end": {
-        "speed": 32.992374406742385,
-        "bearing": 16.066438924115033,
-        "temperature": 43.97777823204256
-      },
-      "geom": {
-        "coordinates": [
-          [
-            -8.60922,
-            41.14674000000001
-          ],
-          [
-            -8.608671,
-            41.14733399999999
-          ]
-        ],
-        "type": "LineString"
-      }
+      "t_start": "2014-02-15 11:26:43",
+      "traj_id": "1392463543620000658"
     },
     {
-      "traj_id": "1392463543620000658",
-      "geom_start": {
-        "coordinates": [
-          -8.608671,
-          41.14733399999999
-        ],
-        "type": "Point"
+      "geom": "LINESTRING(-8.60867 41.14733, -8.60811 41.14818)",
+      "geom_end": "POINT(-8.60811 41.14818)",
+      "geom_start": "POINT(-8.60867 41.14733)",
+      "properties_end": {
+        "bearing": 264.421,
+        "speed": 78.128,
+        "temperature": 29.808
       },
-      "t_start": "2014-02-15 11:26:58",
       "properties_start": {
-        "speed": 32.992374406742385,
-        "bearing": 16.066438924115033,
-        "temperature": 43.97777823204256
-      },
-      "geom_end": {
-        "coordinates": [
-          -8.608113,
-          41.14818
-        ],
-        "type": "Point"
+        "bearing": 16.066,
+        "speed": 32.992,
+        "temperature": 43.978
       },
       "t_end": "2014-02-15 11:27:13",
-      "properties_end": {
-        "speed": 78.12848836858524,
-        "bearing": 264.4213440526504,
-        "temperature": 29.808141707478935
-      },
-      "geom": {
-        "coordinates": [
-          [
-            -8.608671,
-            41.14733399999999
-          ],
-          [
-            -8.608113,
-            41.14818
-          ]
-        ],
-        "type": "LineString"
-      }
+      "t_start": "2014-02-15 11:26:58",
+      "traj_id": "1392463543620000658"
     },
     {
-      "traj_id": "1392463543620000658",
-      "geom_start": {
-        "coordinates": [
-          -8.608113,
-          41.14818
-        ],
-        "type": "Point"
+      "geom": "LINESTRING(-8.60811 41.14818, -8.60814 41.14823)",
+      "geom_end": "POINT(-8.60814 41.14823)",
+      "geom_start": "POINT(-8.60811 41.14818)",
+      "properties_end": {
+        "bearing": 113.242,
+        "speed": 36.758,
+        "temperature": 24.559
       },
-      "t_start": "2014-02-15 11:27:13",
       "properties_start": {
-        "speed": 78.12848836858524,
-        "bearing": 264.4213440526504,
-        "temperature": 29.808141707478935
-      },
-      "geom_end": {
-        "coordinates": [
-          -8.608140000000002,
-          41.14823400000001
-        ],
-        "type": "Point"
+        "bearing": 264.421,
+        "speed": 78.128,
+        "temperature": 29.808
       },
       "t_end": "2014-02-15 11:27:28",
-      "properties_end": {
-        "speed": 36.75838385362199,
-        "bearing": 113.24200161253441,
-        "temperature": 24.558679140911543
-      },
-      "geom": {
-        "coordinates": [
-          [
-            -8.608113,
-            41.14818
-          ],
-          [
-            -8.608140000000002,
-            41.14823400000001
-          ]
-        ],
-        "type": "LineString"
-      }
+      "t_start": "2014-02-15 11:27:13",
+      "traj_id": "1392463543620000658"
     },
     {
-      "traj_id": "1392463543620000658",
-      "geom_start": {
-        "coordinates": [
-          -8.608140000000002,
-          41.14823400000001
-        ],
-        "type": "Point"
+      "geom": "LINESTRING(-8.60814 41.14823, -8.60785 41.14866)",
+      "geom_end": "POINT(-8.60785 41.14866)",
+      "geom_start": "POINT(-8.60814 41.14823)",
+      "properties_end": {
+        "bearing": 211.551,
+        "speed": 41.567,
+        "temperature": 22.304
       },
-      "t_start": "2014-02-15 11:27:28",
       "properties_start": {
-        "speed": 36.75838385362199,
-        "bearing": 113.24200161253441,
-        "temperature": 24.558679140911543
-      },
-      "geom_end": {
-        "coordinates": [
-          -8.607852000000001,
-          41.148657
-        ],
-        "type": "Point"
+        "bearing": 113.242,
+        "speed": 36.758,
+        "temperature": 24.559
       },
       "t_end": "2014-02-15 11:27:43",
-      "properties_end": {
-        "speed": 41.56726235417375,
-        "bearing": 211.55109446278217,
-        "temperature": 22.30447096539812
-      },
-      "geom": {
-        "coordinates": [
-          [
-            -8.608140000000002,
-            41.14823400000001
-          ],
-          [
-            -8.607852000000001,
-            41.148657
-          ]
-        ],
-        "type": "LineString"
-      }
+      "t_start": "2014-02-15 11:27:28",
+      "traj_id": "1392463543620000658"
     },
     {
-      "traj_id": "1392463543620000658",
-      "geom_start": {
-        "coordinates": [
-          -8.607852000000001,
-          41.148657
-        ],
-        "type": "Point"
+      "geom": "LINESTRING(-8.60785 41.14866, -8.60737 41.14863)",
+      "geom_end": "POINT(-8.60737 41.14863)",
+      "geom_start": "POINT(-8.60785 41.14866)",
+      "properties_end": {
+        "bearing": 280.68,
+        "speed": 112.475,
+        "temperature": 38.536
       },
-      "t_start": "2014-02-15 11:27:43",
       "properties_start": {
-        "speed": 41.56726235417375,
-        "bearing": 211.55109446278217,
-        "temperature": 22.30447096539812
-      },
-      "geom_end": {
-        "coordinates": [
-          -8.607375,
-          41.14863
-        ],
-        "type": "Point"
+        "bearing": 211.551,
+        "speed": 41.567,
+        "temperature": 22.304
       },
       "t_end": "2014-02-15 11:27:58",
-      "properties_end": {
-        "speed": 112.47465033007384,
-        "bearing": 280.68000914829537,
-        "temperature": 38.53638364408305
-      },
-      "geom": {
-        "coordinates": [
-          [
-            -8.607852000000001,
-            41.148657
-          ],
-          [
-            -8.607375,
-            41.14863
-          ]
-        ],
-        "type": "LineString"
-      }
+      "t_start": "2014-02-15 11:27:43",
+      "traj_id": "1392463543620000658"
     },
     {
-      "traj_id": "1392463543620000658",
-      "geom_start": {
-        "coordinates": [
-          -8.607375,
-          41.14863
-        ],
-        "type": "Point"
+      "geom": "LINESTRING(-8.60737 41.14863, -8.60673 41.14844)",
+      "geom_end": "POINT(-8.60673 41.14844)",
+      "geom_start": "POINT(-8.60737 41.14863)",
+      "properties_end": {
+        "bearing": 108.84,
+        "speed": 85.505,
+        "temperature": 30.359
       },
-      "t_start": "2014-02-15 11:27:58",
       "properties_start": {
-        "speed": 112.47465033007384,
-        "bearing": 280.68000914829537,
-        "temperature": 38.53638364408305
-      },
-      "geom_end": {
-        "coordinates": [
-          -8.606727,
-          41.148441
-        ],
-        "type": "Point"
+        "bearing": 280.68,
+        "speed": 112.475,
+        "temperature": 38.536
       },
       "t_end": "2014-02-15 11:28:13",
-      "properties_end": {
-        "speed": 85.50463540716876,
-        "bearing": 108.84044838301476,
-        "temperature": 30.35899585064068
-      },
-      "geom": {
-        "coordinates": [
-          [
-            -8.607375,
-            41.14863
-          ],
-          [
-            -8.606727,
-            41.148441
-          ]
-        ],
-        "type": "LineString"
-      }
+      "t_start": "2014-02-15 11:27:58",
+      "traj_id": "1392463543620000658"
     },
     {
-      "traj_id": "1392463543620000658",
-      "geom_start": {
-        "coordinates": [
-          -8.606727,
-          41.148441
-        ],
-        "type": "Point"
+      "geom": "LINESTRING(-8.60673 41.14844, -8.60637 41.14831)",
+      "geom_end": "POINT(-8.60637 41.14831)",
+      "geom_start": "POINT(-8.60673 41.14844)",
+      "properties_end": {
+        "bearing": 122.495,
+        "speed": 19.473,
+        "temperature": 45.988
       },
-      "t_start": "2014-02-15 11:28:13",
       "properties_start": {
-        "speed": 85.50463540716876,
-        "bearing": 108.84044838301476,
-        "temperature": 30.35899585064068
-      },
-      "geom_end": {
-        "coordinates": [
-          -8.606367,
-          41.148315
-        ],
-        "type": "Point"
+        "bearing": 108.84,
+        "speed": 85.505,
+        "temperature": 30.359
       },
       "t_end": "2014-02-15 11:28:28",
-      "properties_end": {
-        "speed": 19.473209122411333,
-        "bearing": 122.4947706580503,
-        "temperature": 45.987596136304376
-      },
-      "geom": {
-        "coordinates": [
-          [
-            -8.606727,
-            41.148441
-          ],
-          [
-            -8.606367,
-            41.148315
-          ]
-        ],
-        "type": "LineString"
-      }
+      "t_start": "2014-02-15 11:28:13",
+      "traj_id": "1392463543620000658"
     },
     {
-      "traj_id": "1392463543620000658",
-      "geom_start": {
-        "coordinates": [
-          -8.606367,
-          41.148315
-        ],
-        "type": "Point"
+      "geom": "LINESTRING(-8.60637 41.14831, -8.60585 41.14823)",
+      "geom_end": "POINT(-8.60585 41.14823)",
+      "geom_start": "POINT(-8.60637 41.14831)",
+      "properties_end": {
+        "bearing": 346.386,
+        "speed": 46.34,
+        "temperature": 32.892
       },
-      "t_start": "2014-02-15 11:28:28",
       "properties_start": {
-        "speed": 19.473209122411333,
-        "bearing": 122.4947706580503,
-        "temperature": 45.987596136304376
-      },
-      "geom_end": {
-        "coordinates": [
-          -8.605854,
-          41.14823400000001
-        ],
-        "type": "Point"
+        "bearing": 122.495,
+        "speed": 19.473,
+        "temperature": 45.988
       },
       "t_end": "2014-02-15 11:28:43",
-      "properties_end": {
-        "speed": 46.33991297241819,
-        "bearing": 346.38588606197777,
-        "temperature": 32.892427328991616
-      },
-      "geom": {
-        "coordinates": [
-          [
-            -8.606367,
-            41.148315
-          ],
-          [
-            -8.605854,
-            41.14823400000001
-          ]
-        ],
-        "type": "LineString"
-      }
+      "t_start": "2014-02-15 11:28:28",
+      "traj_id": "1392463543620000658"
     },
     {
-      "traj_id": "1392463543620000658",
-      "geom_start": {
-        "coordinates": [
-          -8.605854,
-          41.14823400000001
-        ],
-        "type": "Point"
+      "geom": "LINESTRING(-8.60585 41.14823, -8.6051 41.148)",
+      "geom_end": "POINT(-8.6051 41.148)",
+      "geom_start": "POINT(-8.60585 41.14823)",
+      "properties_end": {
+        "bearing": 339.562,
+        "speed": 51.145,
+        "temperature": 6.256
       },
-      "t_start": "2014-02-15 11:28:43",
       "properties_start": {
-        "speed": 46.33991297241819,
-        "bearing": 346.38588606197777,
-        "temperature": 32.892427328991616
-      },
-      "geom_end": {
-        "coordinates": [
-          -8.605098,
-          41.148
-        ],
-        "type": "Point"
+        "bearing": 346.386,
+        "speed": 46.34,
+        "temperature": 32.892
       },
       "t_end": "2014-02-15 11:28:58",
-      "properties_end": {
-        "speed": 51.145362649127534,
-        "bearing": 339.56194646187305,
-        "temperature": 6.256215603161739
-      },
-      "geom": {
-        "coordinates": [
-          [
-            -8.605854,
-            41.14823400000001
-          ],
-          [
-            -8.605098,
-            41.148
-          ]
-        ],
-        "type": "LineString"
-      }
+      "t_start": "2014-02-15 11:28:43",
+      "traj_id": "1392463543620000658"
     },
     {
-      "traj_id": "1392463543620000658",
-      "geom_start": {
-        "coordinates": [
-          -8.605098,
-          41.148
-        ],
-        "type": "Point"
+      "geom": "LINESTRING(-8.6051 41.148, -8.60419 41.14772)",
+      "geom_end": "POINT(-8.60419 41.14772)",
+      "geom_start": "POINT(-8.6051 41.148)",
+      "properties_end": {
+        "bearing": 242.048,
+        "speed": 59.571,
+        "temperature": 43.487
       },
-      "t_start": "2014-02-15 11:28:58",
       "properties_start": {
-        "speed": 51.145362649127534,
-        "bearing": 339.56194646187305,
-        "temperature": 6.256215603161739
-      },
-      "geom_end": {
-        "coordinates": [
-          -8.604189,
-          41.147721
-        ],
-        "type": "Point"
+        "bearing": 339.562,
+        "speed": 51.145,
+        "temperature": 6.256
       },
       "t_end": "2014-02-15 11:29:13",
-      "properties_end": {
-        "speed": 59.57063716774161,
-        "bearing": 242.04813875162154,
-        "temperature": 43.48684456150579
-      },
-      "geom": {
-        "coordinates": [
-          [
-            -8.605098,
-            41.148
-          ],
-          [
-            -8.604189,
-            41.147721
-          ]
-        ],
-        "type": "LineString"
-      }
+      "t_start": "2014-02-15 11:28:58",
+      "traj_id": "1392463543620000658"
     },
     {
-      "traj_id": "1392463543620000658",
-      "geom_start": {
-        "coordinates": [
-          -8.604189,
-          41.147721
-        ],
-        "type": "Point"
+      "geom": "LINESTRING(-8.60419 41.14772, -8.60387 41.14724)",
+      "geom_end": "POINT(-8.60387 41.14724)",
+      "geom_start": "POINT(-8.60419 41.14772)",
+      "properties_end": {
+        "bearing": 267.602,
+        "speed": 19.537,
+        "temperature": 39.973
       },
-      "t_start": "2014-02-15 11:29:13",
       "properties_start": {
-        "speed": 59.57063716774161,
-        "bearing": 242.04813875162154,
-        "temperature": 43.48684456150579
-      },
-      "geom_end": {
-        "coordinates": [
-          -8.603865,
-          41.147244
-        ],
-        "type": "Point"
+        "bearing": 242.048,
+        "speed": 59.571,
+        "temperature": 43.487
       },
       "t_end": "2014-02-15 11:29:28",
-      "properties_end": {
-        "speed": 19.537149600092317,
-        "bearing": 267.6015031878255,
-        "temperature": 39.972687457845154
-      },
-      "geom": {
-        "coordinates": [
-          [
-            -8.604189,
-            41.147721
-          ],
-          [
-            -8.603865,
-            41.147244
-          ]
-        ],
-        "type": "LineString"
-      }
+      "t_start": "2014-02-15 11:29:13",
+      "traj_id": "1392463543620000658"
     },
     {
-      "traj_id": "1392463543620000658",
-      "geom_start": {
-        "coordinates": [
-          -8.603865,
-          41.147244
-        ],
-        "type": "Point"
+      "geom": "LINESTRING(-8.60387 41.14724, -8.6039 41.14683)",
+      "geom_end": "POINT(-8.6039 41.14683)",
+      "geom_start": "POINT(-8.60387 41.14724)",
+      "properties_end": {
+        "bearing": 17.577,
+        "speed": 88.366,
+        "temperature": 42.583
       },
-      "t_start": "2014-02-15 11:29:28",
       "properties_start": {
-        "speed": 19.537149600092317,
-        "bearing": 267.6015031878255,
-        "temperature": 39.972687457845154
-      },
-      "geom_end": {
-        "coordinates": [
-          -8.603901,
-          41.14683
-        ],
-        "type": "Point"
+        "bearing": 267.602,
+        "speed": 19.537,
+        "temperature": 39.973
       },
       "t_end": "2014-02-15 11:29:43",
-      "properties_end": {
-        "speed": 88.36554367354663,
-        "bearing": 17.577023132632416,
-        "temperature": 42.58269226823954
-      },
-      "geom": {
-        "coordinates": [
-          [
-            -8.603865,
-            41.147244
-          ],
-          [
-            -8.603901,
-            41.14683
-          ]
-        ],
-        "type": "LineString"
-      }
+      "t_start": "2014-02-15 11:29:28",
+      "traj_id": "1392463543620000658"
     },
     {
-      "traj_id": "1392463543620000658",
-      "geom_start": {
-        "coordinates": [
-          -8.603901,
-          41.14683
-        ],
-        "type": "Point"
+      "geom": "LINESTRING(-8.6039 41.14683, -8.60397 41.14676)",
+      "geom_end": "POINT(-8.60397 41.14676)",
+      "geom_start": "POINT(-8.6039 41.14683)",
+      "properties_end": {
+        "bearing": 302.617,
+        "speed": 44.442,
+        "temperature": 32.984
       },
-      "t_start": "2014-02-15 11:29:43",
       "properties_start": {
-        "speed": 88.36554367354663,
-        "bearing": 17.577023132632416,
-        "temperature": 42.58269226823954
-      },
-      "geom_end": {
-        "coordinates": [
-          -8.603973,
-          41.146758
-        ],
-        "type": "Point"
+        "bearing": 17.577,
+        "speed": 88.366,
+        "temperature": 42.583
       },
       "t_end": "2014-02-15 11:29:58",
-      "properties_end": {
-        "speed": 44.44243837983477,
-        "bearing": 302.617477978275,
-        "temperature": 32.98417649969295
-      },
-      "geom": {
-        "coordinates": [
-          [
-            -8.603901,
-            41.14683
-          ],
-          [
-            -8.603973,
-            41.146758
-          ]
-        ],
-        "type": "LineString"
-      }
+      "t_start": "2014-02-15 11:29:43",
+      "traj_id": "1392463543620000658"
     },
     {
-      "traj_id": "1392463543620000658",
-      "geom_start": {
-        "coordinates": [
-          -8.603973,
-          41.146758
-        ],
-        "type": "Point"
+      "geom": "LINESTRING(-8.60397 41.14676, -8.60392 41.14675)",
+      "geom_end": "POINT(-8.60392 41.14675)",
+      "geom_start": "POINT(-8.60397 41.14676)",
+      "properties_end": {
+        "bearing": 104.522,
+        "speed": 98.607,
+        "temperature": 20.788
       },
-      "t_start": "2014-02-15 11:29:58",
       "properties_start": {
-        "speed": 44.44243837983477,
-        "bearing": 302.617477978275,
-        "temperature": 32.98417649969295
-      },
-      "geom_end": {
-        "coordinates": [
-          -8.603919,
-          41.14674900000001
-        ],
-        "type": "Point"
+        "bearing": 302.617,
+        "speed": 44.442,
+        "temperature": 32.984
       },
       "t_end": "2014-02-15 11:30:13",
-      "properties_end": {
-        "speed": 98.60708956111569,
-        "bearing": 104.52158991149317,
-        "temperature": 20.78757816947221
-      },
-      "geom": {
-        "coordinates": [
-          [
-            -8.603973,
-            41.146758
-          ],
-          [
-            -8.603919,
-            41.14674900000001
-          ]
-        ],
-        "type": "LineString"
-      }
+      "t_start": "2014-02-15 11:29:58",
+      "traj_id": "1392463543620000658"
     },
     {
-      "traj_id": "1392463543620000658",
-      "geom_start": {
-        "coordinates": [
-          -8.603919,
-          41.14674900000001
-        ],
-        "type": "Point"
+      "geom": "LINESTRING(-8.60392 41.14675, -8.60389 41.14671)",
+      "geom_end": "POINT(-8.60389 41.14671)",
+      "geom_start": "POINT(-8.60392 41.14675)",
+      "properties_end": {
+        "bearing": 276.582,
+        "speed": 82.61,
+        "temperature": 34.902
       },
-      "t_start": "2014-02-15 11:30:13",
       "properties_start": {
-        "speed": 98.60708956111569,
-        "bearing": 104.52158991149317,
-        "temperature": 20.78757816947221
-      },
-      "geom_end": {
-        "coordinates": [
-          -8.603892,
-          41.146713
-        ],
-        "type": "Point"
+        "bearing": 104.522,
+        "speed": 98.607,
+        "temperature": 20.788
       },
       "t_end": "2014-02-15 11:30:28",
-      "properties_end": {
-        "speed": 82.61040175338456,
-        "bearing": 276.5819171594562,
-        "temperature": 34.901768409546044
-      },
-      "geom": {
-        "coordinates": [
-          [
-            -8.603919,
-            41.14674900000001
-          ],
-          [
-            -8.603892,
-            41.146713
-          ]
-        ],
-        "type": "LineString"
-      }
+      "t_start": "2014-02-15 11:30:13",
+      "traj_id": "1392463543620000658"
     },
     {
-      "traj_id": "1392463543620000658",
-      "geom_start": {
-        "coordinates": [
-          -8.603892,
-          41.146713
-        ],
-        "type": "Point"
+      "geom": "LINESTRING(-8.60389 41.14671, -8.60423 41.14631)",
+      "geom_end": "POINT(-8.60423 41.14631)",
+      "geom_start": "POINT(-8.60389 41.14671)",
+      "properties_end": {
+        "bearing": 54.524,
+        "speed": 55.205,
+        "temperature": 30.858
       },
-      "t_start": "2014-02-15 11:30:28",
       "properties_start": {
-        "speed": 82.61040175338456,
-        "bearing": 276.5819171594562,
-        "temperature": 34.901768409546044
-      },
-      "geom_end": {
-        "coordinates": [
-          -8.604234,
-          41.146308
-        ],
-        "type": "Point"
+        "bearing": 276.582,
+        "speed": 82.61,
+        "temperature": 34.902
       },
       "t_end": "2014-02-15 11:30:43",
-      "properties_end": {
-        "speed": 55.2053088868728,
-        "bearing": 54.524414753854074,
-        "temperature": 30.857788793339147
-      },
-      "geom": {
-        "coordinates": [
-          [
-            -8.603892,
-            41.146713
-          ],
-          [
-            -8.604234,
-            41.146308
-          ]
-        ],
-        "type": "LineString"
-      }
+      "t_start": "2014-02-15 11:30:28",
+      "traj_id": "1392463543620000658"
     },
     {
-      "traj_id": "1392463543620000658",
-      "geom_start": {
-        "coordinates": [
-          -8.604234,
-          41.146308
-        ],
-        "type": "Point"
+      "geom": "LINESTRING(-8.60423 41.14631, -8.60267 41.14622)",
+      "geom_end": "POINT(-8.60267 41.14622)",
+      "geom_start": "POINT(-8.60423 41.14631)",
+      "properties_end": {
+        "bearing": 65.414,
+        "speed": 92.925,
+        "temperature": 7.253
       },
-      "t_start": "2014-02-15 11:30:43",
       "properties_start": {
-        "speed": 55.2053088868728,
-        "bearing": 54.524414753854074,
-        "temperature": 30.857788793339147
-      },
-      "geom_end": {
-        "coordinates": [
-          -8.602668,
-          41.146218
-        ],
-        "type": "Point"
+        "bearing": 54.524,
+        "speed": 55.205,
+        "temperature": 30.858
       },
       "t_end": "2014-02-15 11:30:58",
-      "properties_end": {
-        "speed": 92.92474913007665,
-        "bearing": 65.41352659249829,
-        "temperature": 7.253170331522912
-      },
-      "geom": {
-        "coordinates": [
-          [
-            -8.604234,
-            41.146308
-          ],
-          [
-            -8.602668,
-            41.146218
-          ]
-        ],
-        "type": "LineString"
-      }
+      "t_start": "2014-02-15 11:30:43",
+      "traj_id": "1392463543620000658"
     }
   ]
 }
