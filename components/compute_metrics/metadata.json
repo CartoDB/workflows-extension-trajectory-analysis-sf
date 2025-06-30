@@ -1,0 +1,241 @@
+{
+    "name": "compute_metrics",
+    "title": "Compute Trajectory Metrics",
+    "description": "Computes derived metrics for segments (consecutive points) within trajectories, including distances, durations, directions, speeds, and accelerations.",
+    "version": "1.0.0",
+    "icon": "trajectory_metrics.svg",
+    "cartoEnvVars": [],
+    "inputs": [
+        {
+            "name": "input_table",
+            "title": "Trajectories table",
+            "description": "Table containing the trajectories",
+            "type": "Table"
+        },
+        {
+            "name": "input_traj_id_column",
+            "title": "Trajectory IDs column",
+            "description": "Column containing the trajectory IDs",
+            "type": "Column",
+            "parent": "input_table",
+            "noDefault": "true",
+            "optional": false
+        },
+        {
+            "name": "input_tpoints_column",
+            "title": "Trajectory points column",
+            "description": "Column containing the points for each trajectory",
+            "type": "Column",
+            "parent": "input_table",
+            "noDefault": "true",
+            "optional": false
+        },
+        {
+            "name": "input_distance_bool",
+            "title": "Compute distances",
+            "description": "If enabled, it will compute the distances between consecutive points in each trajectory",
+            "helper": "If enabled, it will compute the distance between consecutive points in each trajectory, in a new column",
+            "type": "Boolean",
+            "default": true,
+            "optional": false
+        },
+        {
+            "name": "input_distance_column",
+            "title": "Distance column name",
+            "description": "Name to be assigned to the distance column",
+            "type": "String",
+            "default":"distance",
+            "optional": false,
+            "showIf": [
+                {
+                    "parameter": "input_distance_bool",
+                    "value": true
+                }
+            ]
+        },
+        {
+            "name": "input_distance_unit_distance",
+            "title": "Distance unit",
+            "description": "Unit for the computation of the distance",
+            "type": "Selection",
+            "options": ["Kilometers", "Meters", "Miles", "Nautical Miles"],
+            "default": "Meters",
+            "showIf": [
+                {
+                    "parameter": "input_distance_bool",
+                    "value": true
+                }
+            ]
+        },
+        {
+            "name": "input_duration_bool",
+            "title": "Compute durations",
+            "description": "If enabled, it will compute the duration of each trajectory segment",
+            "helper": "If enabled, it will compute the duration of each trajectory segment, in a new column",
+            "type": "Boolean",
+            "default": true,
+            "optional": false
+        },
+        {
+            "name": "input_duration_column",
+            "title": "Duration column name",
+            "description": "Name to be assigned to the duration column",
+            "type": "String",
+            "default":"duration",
+            "optional": false,
+            "showIf": [
+                {
+                    "parameter": "input_duration_bool",
+                    "value": true
+                }
+            ]
+        },
+        {
+            "name": "input_duration_unit_time",
+            "title": "Duration unit",
+            "description": "Unit for the computation of the duration",
+            "type": "Selection",
+            "options": ["Seconds", "Hours"],
+            "default": "Seconds",
+            "showIf": [
+                {
+                    "parameter": "input_duration_bool",
+                    "value": true
+                }
+            ]
+        },
+        {
+            "name": "input_direction_bool",
+            "title": "Compute directions",
+            "description": "If enabled, it will compute the direction of each trajectory segment",
+            "helper": "If enabled, it will compute the direction of each trajectory segment, in a new column",
+            "type": "Boolean",
+            "default": true,
+            "optional": false
+        },
+        {
+            "name": "input_direction_column",
+            "title": "Direction column name",
+            "description": "Name to be assigned to the direction column",
+            "type": "String",
+            "default":"direction",
+            "optional": false,
+            "showIf": [
+                {
+                    "parameter": "input_direction_bool",
+                    "value": true
+                }
+            ]
+        },
+        {
+            "name": "input_speed_bool",
+            "title": "Compute speeds",
+            "description": "If enabled, it will compute the speed for each trajectory segment",
+            "helper": "If enabled, it will compute the speed for each trajectory segment, in a new column",
+            "type": "Boolean",
+            "default": true,
+            "optional": false
+        },
+        {
+            "name": "input_speed_column",
+            "title": "Speed column name",
+            "description": "Name to be assigned to the speed column",
+            "type": "String",
+            "default":"speed",
+            "optional": false,
+            "showIf": [
+                {
+                    "parameter": "input_speed_bool",
+                    "value": true
+                }
+            ]
+        },
+        {
+            "name": "input_speed_unit_distance",
+            "title": "Speed distance unit",
+            "description": "Unit for the computation of the speed (distance)",
+            "type": "Selection",
+            "options": ["Kilometers", "Meters", "Miles", "Nautical Miles"],
+            "default": "Meters",
+            "showIf": [
+                {
+                    "parameter": "input_speed_bool",
+                    "value": true
+                }
+            ]
+        },
+        {
+            "name": "input_speed_unit_time",
+            "title": "Speed time unit",
+            "description": "Unit for the computation of the speed (time)",
+            "type": "Selection",
+            "options": ["Seconds", "Hours"],
+            "default": "Seconds",
+            "showIf": [
+                {
+                    "parameter": "input_speed_bool",
+                    "value": true
+                }
+            ]
+        },
+        {
+            "name": "input_acceleration_bool",
+            "title": "Compute accelerations",
+            "description": "If enabled, it will compute the acceleration for each trajectory segment",
+            "helper": "If enabled, it will compute the acceleration for each trajectory segment, in a new column",
+            "type": "Boolean",
+            "default": true,
+            "optional": false
+        },
+        {
+            "name": "input_acceleration_column",
+            "title": "Acceleration column name",
+            "description": "Name to be assigned to the acceleration column",
+            "type": "String",
+            "default":"acceleration",
+            "optional": false,
+            "showIf": [
+                {
+                    "parameter": "input_acceleration_bool",
+                    "value": true
+                }
+            ]
+        },
+        {
+            "name": "input_acceleration_unit_distance",
+            "title": "Acceleration distance unit",
+            "description": "Unit for the computation of the acceleration (distance)",
+            "type": "Selection",
+            "options": ["Kilometers", "Meters", "Miles", "Nautical Miles"],
+            "default": "Meters",
+            "showIf": [
+                {
+                    "parameter": "input_acceleration_bool",
+                    "value": true
+                }
+            ]
+        },
+        {
+            "name": "input_acceleration_unit_time",
+            "title": "Acceleration time unit",
+            "description": "Unit for the computation of the acceleration (time)",
+            "type": "Selection",
+            "options": ["Seconds", "Hours"],
+            "default": "Seconds",
+            "showIf": [
+                {
+                    "parameter": "input_acceleration_bool",
+                    "value": true
+                }
+            ]
+        }
+    ],
+    "outputs": [
+        {
+            "name": "output_table",
+            "title": "Output table",
+            "description": "The name of the table with the computed metrics",
+            "type": "Table"
+        }
+    ]
+}
