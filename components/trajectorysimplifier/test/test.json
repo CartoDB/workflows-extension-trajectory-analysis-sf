@@ -7,8 +7,7 @@
             "tpoints_col": "tpoints",
             "tolerance": 0,
             "rounding_precision":10
-        },
-        "test_sorting": false
+        }
     },
     {
         "id": 2,
@@ -18,8 +17,7 @@
             "tpoints_col": "tpoints",
             "tolerance": 10,
             "rounding_precision":10
-        },
-        "test_sorting": false
+        }
     },
     {
         "id": 3,
@@ -29,7 +27,6 @@
             "tpoints_col": "tpoints",
             "tolerance": 0,
             "rounding_precision":10
-        },
-        "test_sorting": false
+        }
     }
 ]

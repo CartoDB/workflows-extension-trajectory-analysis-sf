@@ -75,5 +75,9 @@ def main(traj_id, trajectory, tolerance, rounding_precision):
     result['lat_rounded'] = result['lat'].round(rounding_precision)
     result = pd.merge(result, df[['t','lon_rounded','lat_rounded','properties']], on=['t','lon_rounded','lat_rounded'], how = 'left')
     result = result.drop(columns=['geom', 'lon_rounded','lat_rounded'])
+
+    # Fill NaN properties with empty JSON string
+    result['properties'] = result['properties'].fillna('{}')
+
     return result.to_dict(orient='records')
 $$;

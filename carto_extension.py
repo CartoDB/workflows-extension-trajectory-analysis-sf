@@ -63,9 +63,10 @@ class GeometryComparator:
             print(f"ERROR: Exception: {e}")
             raise
     
-    def to_wkt(self) -> str:
+    def to_wkt(self, rounding_precision=5) -> str:
         """Convert GeometryComparator back to WKT string."""
-        return self._shapely_geom.wkt
+        from shapely.wkt import dumps
+        return dumps(self._shapely_geom, rounding_precision=5)
     
     @property
     def geom_type(self) -> str:
@@ -73,10 +74,11 @@ class GeometryComparator:
         return self._shapely_geom.geom_type
     
     def __eq__(self, other):
-        """Compare geometries using shapely's equals method."""
+        """Compare geometries using shapely's equals method with decimal precision."""
         if not isinstance(other, GeometryComparator):
             return False
-        return self._shapely_geom.equals(other._shapely_geom)
+
+        return self.to_wkt() == other.to_wkt()
     
     def __hash__(self):
         """Hash based on WKT representation."""
@@ -84,7 +86,7 @@ class GeometryComparator:
     
     def __repr__(self):
         """String representation."""
-        return f"GeometryComparator({self._shapely_geom.wkt})"
+        return f"GeometryComparator({self.to_wkt()})"
 
 def create_geometry_comparator(value):
     """Factory function to create appropriate geometry comparator."""
@@ -929,8 +931,8 @@ def test(component):
                     expected_output = expected[output_name]
 
                     # Normalize first
-                    output = normalize_json(output, decimal_places=3)
-                    expected_output = normalize_json(expected_output, decimal_places=3)
+                    output = normalize_json(output, decimal_places=5)
+                    expected_output = normalize_json(expected_output, decimal_places=5)
 
                     # Apply sorting after normalization when test_sorting is False
                     if not test_sorting:
@@ -1178,7 +1180,7 @@ def normalize_json(original, decimal_places=3):
 
     return processed
 
-def normalize_element(value, decimal_places=3):
+def normalize_element(value, decimal_places=5):
     """Format a single scalar value in the desired format."""
     # Try to create geometry comparator first
     geom_comparator = create_geometry_comparator(value)

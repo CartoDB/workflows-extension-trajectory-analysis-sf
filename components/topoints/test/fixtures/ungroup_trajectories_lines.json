@@ -1,9 +1,9 @@
 {
   "output_table": [
     {
-      "geom": "LINESTRING(-8.61068 41.14525, -8.6109 41.14533)",
-      "geom_end": "POINT(-8.6109 41.14533)",
-      "geom_start": "POINT(-8.61068 41.14525)",
+      "geom": "LINESTRING (-8.61068 41.14525, -8.61090 41.14533)",
+      "geom_end": "POINT (-8.61090 41.14533)",
+      "geom_start": "POINT (-8.61068 41.14525)",
       "properties_end": {
         "bearing": 186.891,
         "speed": 89.518,
@@ -19,9 +19,9 @@
       "traj_id": "1392463543620000658"
     },
     {
-      "geom": "LINESTRING(-8.6109 41.14533, -8.61078 41.14587)",
-      "geom_end": "POINT(-8.61078 41.14587)",
-      "geom_start": "POINT(-8.6109 41.14533)",
+      "geom": "LINESTRING (-8.61090 41.14533, -8.61078 41.14587)",
+      "geom_end": "POINT (-8.61078 41.14587)",
+      "geom_start": "POINT (-8.61090 41.14533)",
       "properties_end": {
         "bearing": 339.72,
         "speed": 32.993,
@@ -37,9 +37,9 @@
       "traj_id": "1392463543620000658"
     },
     {
-      "geom": "LINESTRING(-8.61078 41.14587, -8.61037 41.14616)",
-      "geom_end": "POINT(-8.61037 41.14616)",
-      "geom_start": "POINT(-8.61078 41.14587)",
+      "geom": "LINESTRING (-8.61078 41.14587, -8.61037 41.14616)",
+      "geom_end": "POINT (-8.61037 41.14616)",
+      "geom_start": "POINT (-8.61078 41.14587)",
       "properties_end": {
         "bearing": 294.594,
         "speed": 59.04,
@@ -55,9 +55,9 @@
       "traj_id": "1392463543620000658"
     },
     {
-      "geom": "LINESTRING(-8.61037 41.14616, -8.60922 41.14674)",
-      "geom_end": "POINT(-8.60922 41.14674)",
-      "geom_start": "POINT(-8.61037 41.14616)",
+      "geom": "LINESTRING (-8.61037 41.14616, -8.60922 41.14674)",
+      "geom_end": "POINT (-8.60922 41.14674)",
+      "geom_start": "POINT (-8.61037 41.14616)",
       "properties_end": {
         "bearing": 236.243,
         "speed": 61.885,
@@ -73,9 +73,9 @@
       "traj_id": "1392463543620000658"
     },
     {
-      "geom": "LINESTRING(-8.60922 41.14674, -8.60867 41.14733)",
-      "geom_end": "POINT(-8.60867 41.14733)",
-      "geom_start": "POINT(-8.60922 41.14674)",
+      "geom": "LINESTRING (-8.60922 41.14674, -8.60867 41.14733)",
+      "geom_end": "POINT (-8.60867 41.14733)",
+      "geom_start": "POINT (-8.60922 41.14674)",
       "properties_end": {
         "bearing": 16.066,
         "speed": 32.992,
@@ -91,9 +91,9 @@
       "traj_id": "1392463543620000658"
     },
     {
-      "geom": "LINESTRING(-8.60867 41.14733, -8.60811 41.14818)",
-      "geom_end": "POINT(-8.60811 41.14818)",
-      "geom_start": "POINT(-8.60867 41.14733)",
+      "geom": "LINESTRING (-8.60867 41.14733, -8.60811 41.14818)",
+      "geom_end": "POINT (-8.60811 41.14818)",
+      "geom_start": "POINT (-8.60867 41.14733)",
       "properties_end": {
         "bearing": 264.421,
         "speed": 78.128,
@@ -109,9 +109,9 @@
       "traj_id": "1392463543620000658"
     },
     {
-      "geom": "LINESTRING(-8.60811 41.14818, -8.60814 41.14823)",
-      "geom_end": "POINT(-8.60814 41.14823)",
-      "geom_start": "POINT(-8.60811 41.14818)",
+      "geom": "LINESTRING (-8.60811 41.14818, -8.60814 41.14823)",
+      "geom_end": "POINT (-8.60814 41.14823)",
+      "geom_start": "POINT (-8.60811 41.14818)",
       "properties_end": {
         "bearing": 113.242,
         "speed": 36.758,
@@ -127,9 +127,9 @@
       "traj_id": "1392463543620000658"
     },
     {
-      "geom": "LINESTRING(-8.60814 41.14823, -8.60785 41.14866)",
-      "geom_end": "POINT(-8.60785 41.14866)",
-      "geom_start": "POINT(-8.60814 41.14823)",
+      "geom": "LINESTRING (-8.60814 41.14823, -8.60785 41.14866)",
+      "geom_end": "POINT (-8.60785 41.14866)",
+      "geom_start": "POINT (-8.60814 41.14823)",
       "properties_end": {
         "bearing": 211.551,
         "speed": 41.567,
@@ -145,9 +145,9 @@
       "traj_id": "1392463543620000658"
     },
     {
-      "geom": "LINESTRING(-8.60785 41.14866, -8.60737 41.14863)",
-      "geom_end": "POINT(-8.60737 41.14863)",
-      "geom_start": "POINT(-8.60785 41.14866)",
+      "geom": "LINESTRING (-8.60785 41.14866, -8.60737 41.14863)",
+      "geom_end": "POINT (-8.60737 41.14863)",
+      "geom_start": "POINT (-8.60785 41.14866)",
       "properties_end": {
         "bearing": 280.68,
         "speed": 112.475,
@@ -163,9 +163,9 @@
       "traj_id": "1392463543620000658"
     },
     {
-      "geom": "LINESTRING(-8.60737 41.14863, -8.60673 41.14844)",
-      "geom_end": "POINT(-8.60673 41.14844)",
-      "geom_start": "POINT(-8.60737 41.14863)",
+      "geom": "LINESTRING (-8.60737 41.14863, -8.60673 41.14844)",
+      "geom_end": "POINT (-8.60673 41.14844)",
+      "geom_start": "POINT (-8.60737 41.14863)",
       "properties_end": {
         "bearing": 108.84,
         "speed": 85.505,
@@ -181,9 +181,9 @@
       "traj_id": "1392463543620000658"
     },
     {
-      "geom": "LINESTRING(-8.60673 41.14844, -8.60637 41.14831)",
-      "geom_end": "POINT(-8.60637 41.14831)",
-      "geom_start": "POINT(-8.60673 41.14844)",
+      "geom": "LINESTRING (-8.60673 41.14844, -8.60637 41.14831)",
+      "geom_end": "POINT (-8.60637 41.14831)",
+      "geom_start": "POINT (-8.60673 41.14844)",
       "properties_end": {
         "bearing": 122.495,
         "speed": 19.473,
@@ -199,9 +199,9 @@
       "traj_id": "1392463543620000658"
     },
     {
-      "geom": "LINESTRING(-8.60637 41.14831, -8.60585 41.14823)",
-      "geom_end": "POINT(-8.60585 41.14823)",
-      "geom_start": "POINT(-8.60637 41.14831)",
+      "geom": "LINESTRING (-8.60637 41.14831, -8.60585 41.14823)",
+      "geom_end": "POINT (-8.60585 41.14823)",
+      "geom_start": "POINT (-8.60637 41.14831)",
       "properties_end": {
         "bearing": 346.386,
         "speed": 46.34,
@@ -217,9 +217,9 @@
       "traj_id": "1392463543620000658"
     },
     {
-      "geom": "LINESTRING(-8.60585 41.14823, -8.6051 41.148)",
-      "geom_end": "POINT(-8.6051 41.148)",
-      "geom_start": "POINT(-8.60585 41.14823)",
+      "geom": "LINESTRING (-8.60585 41.14823, -8.60510 41.14800)",
+      "geom_end": "POINT (-8.60510 41.14800)",
+      "geom_start": "POINT (-8.60585 41.14823)",
       "properties_end": {
         "bearing": 339.562,
         "speed": 51.145,
@@ -235,9 +235,9 @@
       "traj_id": "1392463543620000658"
     },
     {
-      "geom": "LINESTRING(-8.6051 41.148, -8.60419 41.14772)",
-      "geom_end": "POINT(-8.60419 41.14772)",
-      "geom_start": "POINT(-8.6051 41.148)",
+      "geom": "LINESTRING (-8.60510 41.14800, -8.60419 41.14772)",
+      "geom_end": "POINT (-8.60419 41.14772)",
+      "geom_start": "POINT (-8.60510 41.14800)",
       "properties_end": {
         "bearing": 242.048,
         "speed": 59.571,
@@ -253,9 +253,9 @@
       "traj_id": "1392463543620000658"
     },
     {
-      "geom": "LINESTRING(-8.60419 41.14772, -8.60387 41.14724)",
-      "geom_end": "POINT(-8.60387 41.14724)",
-      "geom_start": "POINT(-8.60419 41.14772)",
+      "geom": "LINESTRING (-8.60419 41.14772, -8.60387 41.14724)",
+      "geom_end": "POINT (-8.60387 41.14724)",
+      "geom_start": "POINT (-8.60419 41.14772)",
       "properties_end": {
         "bearing": 267.602,
         "speed": 19.537,
@@ -271,9 +271,9 @@
       "traj_id": "1392463543620000658"
     },
     {
-      "geom": "LINESTRING(-8.60387 41.14724, -8.6039 41.14683)",
-      "geom_end": "POINT(-8.6039 41.14683)",
-      "geom_start": "POINT(-8.60387 41.14724)",
+      "geom": "LINESTRING (-8.60387 41.14724, -8.60390 41.14683)",
+      "geom_end": "POINT (-8.60390 41.14683)",
+      "geom_start": "POINT (-8.60387 41.14724)",
       "properties_end": {
         "bearing": 17.577,
         "speed": 88.366,
@@ -289,9 +289,9 @@
       "traj_id": "1392463543620000658"
     },
     {
-      "geom": "LINESTRING(-8.6039 41.14683, -8.60397 41.14676)",
-      "geom_end": "POINT(-8.60397 41.14676)",
-      "geom_start": "POINT(-8.6039 41.14683)",
+      "geom": "LINESTRING (-8.60390 41.14683, -8.60397 41.14676)",
+      "geom_end": "POINT (-8.60397 41.14676)",
+      "geom_start": "POINT (-8.60390 41.14683)",
       "properties_end": {
         "bearing": 302.617,
         "speed": 44.442,
@@ -307,9 +307,9 @@
       "traj_id": "1392463543620000658"
     },
     {
-      "geom": "LINESTRING(-8.60397 41.14676, -8.60392 41.14675)",
-      "geom_end": "POINT(-8.60392 41.14675)",
-      "geom_start": "POINT(-8.60397 41.14676)",
+      "geom": "LINESTRING (-8.60397 41.14676, -8.60392 41.14675)",
+      "geom_end": "POINT (-8.60392 41.14675)",
+      "geom_start": "POINT (-8.60397 41.14676)",
       "properties_end": {
         "bearing": 104.522,
         "speed": 98.607,
@@ -325,9 +325,9 @@
       "traj_id": "1392463543620000658"
     },
     {
-      "geom": "LINESTRING(-8.60392 41.14675, -8.60389 41.14671)",
-      "geom_end": "POINT(-8.60389 41.14671)",
-      "geom_start": "POINT(-8.60392 41.14675)",
+      "geom": "LINESTRING (-8.60392 41.14675, -8.60389 41.14671)",
+      "geom_end": "POINT (-8.60389 41.14671)",
+      "geom_start": "POINT (-8.60392 41.14675)",
       "properties_end": {
         "bearing": 276.582,
         "speed": 82.61,
@@ -343,9 +343,9 @@
       "traj_id": "1392463543620000658"
     },
     {
-      "geom": "LINESTRING(-8.60389 41.14671, -8.60423 41.14631)",
-      "geom_end": "POINT(-8.60423 41.14631)",
-      "geom_start": "POINT(-8.60389 41.14671)",
+      "geom": "LINESTRING (-8.60389 41.14671, -8.60423 41.14631)",
+      "geom_end": "POINT (-8.60423 41.14631)",
+      "geom_start": "POINT (-8.60389 41.14671)",
       "properties_end": {
         "bearing": 54.524,
         "speed": 55.205,
@@ -361,9 +361,9 @@
       "traj_id": "1392463543620000658"
     },
     {
-      "geom": "LINESTRING(-8.60423 41.14631, -8.60267 41.14622)",
-      "geom_end": "POINT(-8.60267 41.14622)",
-      "geom_start": "POINT(-8.60423 41.14631)",
+      "geom": "LINESTRING (-8.60423 41.14631, -8.60267 41.14622)",
+      "geom_end": "POINT (-8.60267 41.14622)",
+      "geom_start": "POINT (-8.60423 41.14631)",
       "properties_end": {
         "bearing": 65.414,
         "speed": 92.925,
