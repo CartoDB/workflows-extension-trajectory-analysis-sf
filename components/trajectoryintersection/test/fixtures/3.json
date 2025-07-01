@@ -1,0 +1,39 @@
+{
+  "output_table": [
+    {
+      "key": "None",
+      "tpoints": [],
+      "traj_id": "edge_case_n=0"
+    },
+    {
+      "key": "B",
+      "tpoints": [],
+      "traj_id": "1399747065620000356"
+    },
+    {
+      "key": "C",
+      "tpoints": [],
+      "traj_id": "1375880803620000311"
+    },
+    {
+      "key": "None",
+      "tpoints": [],
+      "traj_id": "edge_case_n=1"
+    },
+    {
+      "key": "A",
+      "tpoints": [],
+      "traj_id": "1396803119620000674"
+    },
+    {
+      "key": "A",
+      "tpoints": [],
+      "traj_id": "1401446722620000094"
+    },
+    {
+      "key": "A",
+      "tpoints": [],
+      "traj_id": "1383817073620000576"
+    }
+  ]
+}

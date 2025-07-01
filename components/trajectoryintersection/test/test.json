@@ -1,0 +1,50 @@
+[
+    {
+        "id": 1,
+        "inputs": {
+            "input_table_polygon": "polygon_1",
+            "input_table": "trajectories",
+            "traj_id_col": "traj_id",
+            "tpoints_col": "tpoints",
+            "polygon_col": "polygon",
+            "polygon_properties_col": "polygon_properties",
+            "return_polygon_properties":true,
+            "intersection_method":"Segments",
+            "join_type": "Cross Join",
+            "traj_key_col": null,
+            "polygon_key_col": null
+        }
+    },
+    {
+        "id": 2,
+        "inputs": {
+            "input_table_polygon": "polygon_1",
+            "input_table": "trajectories",
+            "traj_id_col": "traj_id",
+            "tpoints_col": "tpoints",
+            "polygon_col": "polygon",
+            "polygon_properties_col": "polygon_properties",
+            "return_polygon_properties":false,
+            "intersection_method":"Points",
+            "join_type": "Key Join",
+            "traj_key_col": "key",
+            "polygon_key_col": "key_poly"
+        }
+    },
+    {
+        "id": 3,
+        "inputs": {
+            "input_table_polygon": "polygon_2",
+            "input_table": "trajectories",
+            "traj_id_col": "traj_id",
+            "tpoints_col": "tpoints",
+            "polygon_col": "polygon",
+            "polygon_properties_col": "polygon_properties",
+            "return_polygon_properties":false,
+            "intersection_method":"Points",
+            "join_type": "Cross Join",
+            "traj_key_col": null,
+            "polygon_key_col": null
+        }
+    }
+]
