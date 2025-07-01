@@ -35,7 +35,7 @@ from typing import Tuple, List, Union
 
 class GeometryComparator:
     """Unified geometry comparator using shapely directly."""
-    
+
     def __init__(self, shapely_geom):
         """Initialize with a shapely geometry object."""
         self._shapely_geom = shapely_geom
@@ -62,28 +62,50 @@ class GeometryComparator:
             print(f"ERROR: Failed to parse GeoJSON: {geojson_dict}")
             print(f"ERROR: Exception: {e}")
             raise
-    
+
+    @classmethod
+    def from_geography_string(cls, value: str) -> 'GeometryComparator':
+        """Create GeometryComparator from WKT or GeoJSON string. Tries WKT first, then GeoJSON, raises error otherwise."""
+        # Try WKT first
+        try:
+            geom = wkt.loads(value)
+            return cls(geom)
+        except Exception:
+            pass
+
+        # Try GeoJSON
+        try:
+            geojson_dict = json.loads(value)
+            from shapely.geometry import shape
+            geom = shape(geojson_dict)
+            return cls(geom)
+        except Exception:
+            pass
+
+        # Neither worked, raise error
+        raise ValueError(f"Could not parse as WKT or GeoJSON: {value}")
+
     def to_wkt(self, rounding_precision=5) -> str:
         """Convert GeometryComparator back to WKT string."""
         from shapely.wkt import dumps
         return dumps(self._shapely_geom, rounding_precision=5)
-    
+
     @property
     def geom_type(self) -> str:
         """Get geometry type."""
         return self._shapely_geom.geom_type
-    
+
     def __eq__(self, other):
         """Compare geometries using shapely's equals method with decimal precision."""
         if not isinstance(other, GeometryComparator):
             return False
 
         return self.to_wkt() == other.to_wkt()
-    
+
     def __hash__(self):
         """Hash based on WKT representation."""
         return hash(self._shapely_geom.wkt)
-    
+
     def __repr__(self):
         """String representation."""
         return f"GeometryComparator({self.to_wkt()})"
@@ -607,17 +629,12 @@ def infer_schema_field_sf(key: str, value: Any) -> str:
         elif key.endswith("datetime"):
             return "DATETIME"
         else:
-            # FIXME: Handle specific geometry column names and WKT parsing issues
-            if "polygon" in key.lower() or "geom" in key.lower() or "geometry" in key.lower():
-                # FIXME: Force polygon columns to VARCHAR to avoid GEOGRAPHY conversion issues
-                # The trajectory intersection function expects WKT strings, not GEOGRAPHY type
+            # Try to create GEOGRAPHY from WKT or GeoJSON, fall back to VARCHAR if it fails
+            try:
+                GeometryComparator.from_geography_string(value)
+                return "GEOGRAPHY"
+            except Exception:
                 return "VARCHAR"
-            else:
-                try:
-                    wkt.loads(value)
-                    return "GEOGRAPHY"
-                except Exception:
-                    return "VARCHAR"
     elif value is None:
         return "VARCHAR"  # Default for null values
     else:
@@ -1166,7 +1183,7 @@ def normalize_json(original, decimal_places=3):
         if isinstance(obj, GeometryComparator):
             return obj.to_wkt()
         return str(obj)
-    
+
     original = json.loads(json.dumps(original, default=serialize_with_geom))
 
     processed = list()

@@ -105,8 +105,8 @@ def main(
             input_speed_column: row.get(input_speed_column),
             input_acceleration_column: row.get(input_acceleration_column),
         }
-         # Filter out empty (non-computed) metrics
-        other_fields = {key: value for key, value in other_fields.items() if key}
+         # Filter out empty (non-computed) metrics and "undefined" parameters
+        other_fields = {key: value for key, value in other_fields.items() if key and key != "undefined"}
 
         # Merge properties JSON with the other fields
         return json.dumps({**properties_json, **other_fields})
@@ -117,20 +117,20 @@ def main(
         result = df.copy()
         added_columns = []
         
-        if input_distance_bool:
-            result[input_distance_column] = np.nan
+        if input_distance_bool and input_distance_column != "undefined":
+            result[input_distance_column] = None  # Use None instead of np.nan for JSON serialization
             added_columns.append(input_distance_column)
-        if input_duration_bool:
-            result[input_duration_column] = np.nan
+        if input_duration_bool and input_duration_column != "undefined":
+            result[input_duration_column] = None
             added_columns.append(input_duration_column)
-        if input_direction_bool:
-            result[input_direction_column] = np.nan
+        if input_direction_bool and input_direction_column != "undefined":
+            result[input_direction_column] = None
             added_columns.append(input_direction_column)
-        if input_speed_bool:
-            result[input_speed_column] = np.nan
+        if input_speed_bool and input_speed_column != "undefined":
+            result[input_speed_column] = None
             added_columns.append(input_speed_column)
-        if input_acceleration_bool:
-            result[input_acceleration_column] = np.nan
+        if input_acceleration_bool and input_acceleration_column != "undefined":
+            result[input_acceleration_column] = None
             added_columns.append(input_acceleration_column)
 
         result['properties'] = result.apply(merge_json, axis=1)
@@ -155,19 +155,19 @@ def main(
     
     # TODO: When MovingPandas version is updated, these methods may return the trajectory object
     # instead of modifying in-place. If so, change back to: traj = traj.add_*() pattern
-    if input_distance_bool:
+    if input_distance_bool and input_distance_column != "undefined":
         traj.add_distance(name=input_distance_column, units=distance_units[input_distance_unit_distance])
         added_columns.append(input_distance_column)
-    if input_duration_bool:
+    if input_duration_bool and input_duration_column != "undefined":
         traj.add_timedelta(name=input_duration_column)
         added_columns.append(input_duration_column)
-    if input_direction_bool:
+    if input_direction_bool and input_direction_column != "undefined":
         traj.add_direction(name=input_direction_column)
         added_columns.append(input_direction_column)
-    if input_speed_bool:
+    if input_speed_bool and input_speed_column != "undefined":
         traj.add_speed(name=input_speed_column, units=(distance_units[input_speed_unit_distance], time_units[input_speed_unit_time]))
         added_columns.append(input_speed_column)
-    if input_acceleration_bool:
+    if input_acceleration_bool and input_acceleration_column != "undefined":
         traj.add_acceleration(name=input_acceleration_column, units=(distance_units[input_acceleration_unit_distance], time_units[input_acceleration_unit_time], time_units[input_acceleration_unit_time]))
         added_columns.append(input_acceleration_column)
 

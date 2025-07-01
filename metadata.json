@@ -24,8 +24,14 @@
     "details": [],
     "components": [
         "frompoints",
+        "topoints",
         "trajectorysplitter",
         "stopdetector",
-        "topoints"
+        "compute_metrics",
+        "trajectorycleaner",
+        "trajectorysimplifier",
+        "get_values_at_timestamp",
+        "trajectoryintersection",
+        "distancefromtrajectory"
     ]
 }

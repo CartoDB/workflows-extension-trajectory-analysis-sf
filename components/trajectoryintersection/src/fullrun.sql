@@ -40,9 +40,7 @@ $$
             WITH polygon_cte AS (
                 SELECT
                     *,
-                    -- FIXME: ST_ASWKT returns binary data, not WKT text - need to handle differently
-                    -- For now, pass polygon as-is since it's already WKT string in test data
-                    ${POLYGON_COL} AS ${POLYGON_COL}_str
+                    ST_ASWKT(${POLYGON_COL}) AS ${POLYGON_COL}_str
                 FROM
                     ${INPUT_TABLE_POLYGON}
             ),

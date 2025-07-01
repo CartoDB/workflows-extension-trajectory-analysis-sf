@@ -27,8 +27,8 @@ $$
                 ${TRAJ_ID_COLUMN},
                 ARRAY_AGG(
                     OBJECT_CONSTRUCT(
-                        'lon', ST_X(ST_GEOGRAPHYFROMWKT(${GEOM_COLUMN})),
-                        'lat', ST_Y(ST_GEOGRAPHYFROMWKT(${GEOM_COLUMN})),
+                        'lon', ST_X(${GEOM_COLUMN}),
+                        'lat', ST_Y(${GEOM_COLUMN}),
                         't', ${T_COLUMN},
                         'properties', ${propertiesConstruct}
                     )
