@@ -74,8 +74,9 @@ def main(
     result['geometry'] = result.geometry.to_wkt()
     
     # Convert timestamps to strings with timezone info to match expected format
-    result['start_time'] = result['start_time'].dt.strftime('%Y-%m-%d %H:%M:%S+00:00')
-    result['end_time'] = result['end_time'].dt.strftime('%Y-%m-%d %H:%M:%S+00:00')
+    if 'start_time' in result.columns:
+        result['start_time'] = result['start_time'].dt.strftime('%Y-%m-%d %H:%M:%S+00:00')
+        result['end_time'] = result['end_time'].dt.strftime('%Y-%m-%d %H:%M:%S+00:00')
 
     return result.to_dict(orient='records')
 $$;

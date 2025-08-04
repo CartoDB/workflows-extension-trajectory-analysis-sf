@@ -22,5 +22,17 @@
             "min_duration": 30,
             "duration_unit": "Seconds"
         }
+    },
+    {
+        "id": 3,
+        "inputs": {
+            "input_table": "trajectories",
+            "traj_id_col": "traj_id",
+            "tpoints_col": "tpoints",
+            "method": "Points",
+            "max_diameter": 30,
+            "min_duration": 3000,
+            "duration_unit": "Seconds"
+        }
     }
 ]
