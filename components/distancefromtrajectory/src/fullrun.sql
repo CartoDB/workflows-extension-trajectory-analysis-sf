@@ -8,6 +8,7 @@ CREATE OR REPLACE TEMP FUNCTION _DISTANCE_FROM_TRAJECTORY_QUERY(
     POSITION_KEY_COL STRING,
     POSITION_COL STRING,
     RETURN_POSITION_PROPERTIES BOOLEAN,
+    POSITION_ID_COL STRING,
     DISTANCE_FROM STRING,
     UNITS STRING,
     DISTANCE_OUTPUT_COL STRING,
@@ -17,11 +18,9 @@ RETURNS STRING NOT NULL
 LANGUAGE JAVASCRIPT
 AS
 $$
-    const positionSelectClause = RETURN_POSITION_PROPERTIES && POSITION_KEY_COL ? 
-        `t.*, p.* EXCLUDE (${POSITION_COL}_str, ${POSITION_KEY_COL})` :
-        RETURN_POSITION_PROPERTIES ? 
-        `t.*, p.* EXCLUDE (${POSITION_COL}_str)` :
-        `t.*`;
+    const positionSelectClause = RETURN_POSITION_PROPERTIES ? 
+        (POSITION_KEY_COL ? `t.*, p.* EXCLUDE (${POSITION_COL}_str, ${POSITION_KEY_COL})` : `t.*, p.* EXCLUDE (${POSITION_COL}_str)`) :
+        `t.*, p.${POSITION_ID_COL}`;
     
     const joinClause = JOIN_TYPE === 'Cross Join' ?
         `${INPUT_TABLE} t CROSS JOIN position_cte p` :
@@ -61,6 +60,7 @@ EXECUTE IMMEDIATE _DISTANCE_FROM_TRAJECTORY_QUERY(
     :position_key_col,
     :position_col,
     :return_position_properties,
+    :position_id_col,
     :distance_from,
     :units,
     :distance_output_col,

@@ -3,6 +3,7 @@ CREATE OR REPLACE TEMP FUNCTION _DISTANCE_FROM_TRAJECTORY_DRYRUN_QUERY(
     INPUT_TABLE_POSITION STRING,
     RETURN_POSITION_PROPERTIES BOOLEAN,
     POSITION_KEY_COL STRING,
+    POSITION_ID_COL STRING,
     DISTANCE_OUTPUT_COL STRING,
     OUTPUT_TABLE STRING
 )
@@ -10,11 +11,9 @@ RETURNS STRING NOT NULL
 LANGUAGE JAVASCRIPT
 AS
 $$
-    const selectClause = RETURN_POSITION_PROPERTIES && POSITION_KEY_COL ? 
-        `t.*, p.* EXCLUDE (${POSITION_KEY_COL})` :
-        RETURN_POSITION_PROPERTIES ? 
-        `t.*, p.*` :
-        `t.*`;
+    const selectClause = RETURN_POSITION_PROPERTIES ? 
+        (POSITION_KEY_COL ? `t.*, p.* EXCLUDE (${POSITION_KEY_COL})` : `t.*, p.*`) :
+        `t.*, p.${POSITION_ID_COL}`;
 
     return `
         CREATE OR REPLACE TABLE ${OUTPUT_TABLE} AS (
@@ -40,6 +39,7 @@ EXECUTE IMMEDIATE _DISTANCE_FROM_TRAJECTORY_DRYRUN_QUERY(
     :input_table_position,
     :return_position_properties,
     :position_key_col,
+    :position_id_col,
     :distance_output_col,
     :output_table
 );
