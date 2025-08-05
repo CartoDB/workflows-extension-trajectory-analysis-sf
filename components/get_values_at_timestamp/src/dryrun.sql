@@ -9,7 +9,7 @@ $$
     return `
         CREATE OR REPLACE TABLE ${OUTPUT_TABLE} (
             ${TRAJ_ID_COL} STRING,
-            t TIMESTAMP,
+            t DATETIME,
             geom GEOGRAPHY
         ) AS (
             SELECT * FROM VALUES 

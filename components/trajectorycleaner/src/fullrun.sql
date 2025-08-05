@@ -20,10 +20,10 @@ $$
                         OBJECT_CONSTRUCT(
                             'lon', p.value:lon::FLOAT,
                             'lat', p.value:lat::FLOAT,
-                            't', REPLACE(p.value:t::STRING, ' UTC', '')::TIMESTAMP,
+                            't', REPLACE(p.value:t::STRING, ' UTC', '')::DATETIME,
                             'properties', p.value:properties::STRING
                         )
-                    ) WITHIN GROUP (ORDER BY REPLACE(p.value:t::STRING, ' UTC', '')::TIMESTAMP) AS tpoints,
+                    ) WITHIN GROUP (ORDER BY REPLACE(p.value:t::STRING, ' UTC', '')::DATETIME) AS tpoints,
                     ANY_VALUE(p.value:logs::STRING) AS logs
                 FROM ${INPUT_TABLE},
                 LATERAL FLATTEN(input => @@workflows_temp@@.TRAJECTORY_OUTLIER_CLEANER(

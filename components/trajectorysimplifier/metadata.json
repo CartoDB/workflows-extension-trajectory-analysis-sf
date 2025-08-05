@@ -2,7 +2,7 @@
     "name": "trajectorysimplifier",
     "title": "Simplify Trajectories",
     "description": "Simplify trajectory by reducing the number of points stored without losing any information",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "icon": "trajectory_simplification.svg",
     "cartoEnvVars": [],
     "inputs": [

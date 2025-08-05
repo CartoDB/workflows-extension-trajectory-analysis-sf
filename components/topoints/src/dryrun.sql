@@ -12,7 +12,7 @@ $$
             CREATE OR REPLACE TABLE ${OUTPUT_TABLE} (
                 ${INPUT_TRAJ_ID_COLUMN} VARCHAR,
                 geom GEOGRAPHY,
-                t TIMESTAMP,
+                t DATETIME,
                 properties VARCHAR
             ) AS (
                 SELECT * FROM VALUES 
@@ -25,10 +25,10 @@ $$
             CREATE OR REPLACE TABLE ${OUTPUT_TABLE} (
                 ${INPUT_TRAJ_ID_COLUMN} VARCHAR,
                 geom_start GEOGRAPHY,
-                t_start TIMESTAMP,
+                t_start DATETIME,
                 properties_start VARCHAR,
                 geom_end GEOGRAPHY,
-                t_end TIMESTAMP,
+                t_end DATETIME,
                 properties_end VARCHAR,
                 geom GEOGRAPHY
             ) AS (

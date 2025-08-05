@@ -2,7 +2,7 @@
     "name": "trajectoryintersection",
     "title": "Intersect Trajectories",
     "description": "Return the trajectory segments that intersect a given polygon",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "icon": "trajectory_intersection.svg",
     "cartoEnvVars": [],
     "inputs": [

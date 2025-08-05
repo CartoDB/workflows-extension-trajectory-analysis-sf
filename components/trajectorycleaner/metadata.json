@@ -2,7 +2,7 @@
     "name": "trajectorycleaner",
     "title": "Clean Trajectories",
     "description": "Clean outliers in a trajectory",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "icon": "trajectory_cleaner.svg",
     "cartoEnvVars": [],
     "inputs": [

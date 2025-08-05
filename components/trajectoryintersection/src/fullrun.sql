@@ -62,7 +62,7 @@ $$
                     OBJECT_CONSTRUCT(
                         'lon', x:lon::FLOAT,
                         'lat', x:lat::FLOAT,
-                        't', x:t::TIMESTAMP,
+                        't', x:t::DATETIME,
                         'properties', x:properties::STRING
                     )
                 ) AS ${TPOINTS_COL}

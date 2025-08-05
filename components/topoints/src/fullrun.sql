@@ -20,7 +20,7 @@ $$
                     SELECT 
                         ${INPUT_TRAJ_ID_COLUMN} AS ${INPUT_TRAJ_ID_COLUMN}, 
                         ST_MAKEPOINT(p.value:lon::FLOAT, p.value:lat::FLOAT) AS geom,
-                        REPLACE(p.value:t::STRING, ' UTC', '')::TIMESTAMP AS t,
+                        REPLACE(p.value:t::STRING, ' UTC', '')::DATETIME AS t,
                         p.value:properties::STRING AS properties
                     FROM CTE,
                     LATERAL FLATTEN(input => ${INPUT_TPOINTS_COLUMN}) AS p
@@ -39,7 +39,7 @@ $$
                     SELECT 
                         ${INPUT_TRAJ_ID_COLUMN} AS ${INPUT_TRAJ_ID_COLUMN}, 
                         ST_MAKEPOINT(p.value:lon::FLOAT, p.value:lat::FLOAT) AS geom,
-                        REPLACE(p.value:t::STRING, ' UTC', '')::TIMESTAMP AS t,
+                        REPLACE(p.value:t::STRING, ' UTC', '')::DATETIME AS t,
                         p.value:properties::STRING AS properties
                     FROM CTE,
                     LATERAL FLATTEN(input => ${INPUT_TPOINTS_COLUMN}) AS p

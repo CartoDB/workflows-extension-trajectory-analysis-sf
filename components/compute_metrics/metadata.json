@@ -2,7 +2,7 @@
     "name": "compute_metrics",
     "title": "Compute Trajectory Metrics",
     "description": "Computes derived metrics for segments (consecutive points) within trajectories, including distances, durations, directions, speeds, and accelerations.",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "icon": "trajectory_metrics.svg",
     "cartoEnvVars": [],
     "inputs": [

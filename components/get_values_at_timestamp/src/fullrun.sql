@@ -28,7 +28,7 @@ $$
             )
             SELECT
                 ${TRAJ_ID_COL},
-                values_at_timestamp:t::TIMESTAMP AS t,
+                values_at_timestamp:t::DATETIME AS t,
                 ST_GEOGRAPHYFROMWKT(values_at_timestamp:geom::STRING) AS geom
             FROM result
         )

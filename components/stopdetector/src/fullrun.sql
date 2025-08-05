@@ -19,8 +19,8 @@ $$
                     ${TRAJ_ID_COL},
                     p.value:stop_id::STRING as stop_id,
                     ST_GEOGRAPHYFROMWKT(p.value:geometry::STRING) AS geom,
-                    p.value:start_time::TIMESTAMP as start_time,
-                    p.value:end_time::TIMESTAMP as end_time,
+                    p.value:start_time::DATETIME as start_time,
+                    p.value:end_time::DATETIME as end_time,
                     p.value:duration_s::FLOAT as duration_s
                 FROM ${INPUT_TABLE},
                 LATERAL FLATTEN(input => @@workflows_temp@@.TRAJECTORY_STOP_POINTS(
@@ -43,10 +43,10 @@ $$
                         OBJECT_CONSTRUCT(
                             'lon', p.value:lon::FLOAT,
                             'lat', p.value:lat::FLOAT,
-                            't', REPLACE(p.value:t::STRING, ' UTC', '')::TIMESTAMP,
+                            't', REPLACE(p.value:t::STRING, ' UTC', '')::DATETIME,
                             'properties', p.value:properties::STRING
                         )
-                    ) WITHIN GROUP (ORDER BY REPLACE(p.value:t::STRING, ' UTC', '')::TIMESTAMP) AS tpoints
+                    ) WITHIN GROUP (ORDER BY REPLACE(p.value:t::STRING, ' UTC', '')::DATETIME) AS tpoints
                 FROM ${INPUT_TABLE},
                 LATERAL FLATTEN(input => @@workflows_temp@@.TRAJECTORY_STOP_SEGMENTS(
                     ${TRAJ_ID_COL},

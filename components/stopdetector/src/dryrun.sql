@@ -14,8 +14,8 @@ $$
                 ${TRAJ_ID_COL} VARCHAR,
                 stop_id VARCHAR,
                 geom GEOGRAPHY,
-                start_time TIMESTAMP,
-                end_time TIMESTAMP,
+                start_time DATETIME,
+                end_time DATETIME,
                 duration_s FLOAT
             ) AS (
                 SELECT * FROM VALUES 

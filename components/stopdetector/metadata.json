@@ -2,7 +2,7 @@
     "name": "stopdetector",
     "title": "Detect Stops",
     "description": "Detect stops in a trajectory",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "icon": "trajectory_stop_detector.svg",
     "cartoEnvVars": [],
     "inputs": [

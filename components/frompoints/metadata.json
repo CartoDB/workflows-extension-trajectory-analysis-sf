@@ -2,7 +2,7 @@
     "name": "frompoints",
     "title": "Trajectory from Points",
     "description": "Converts a table containing points with timestamps into trajectories, where each row represents a complete trajectory.",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "icon": "trajectory_from_points.svg",
     "cartoEnvVars": [],
     "inputs": [
