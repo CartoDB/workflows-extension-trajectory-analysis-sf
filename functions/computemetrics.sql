@@ -21,7 +21,7 @@ CREATE OR REPLACE FUNCTION @@workflows_temp@@.TRAJECTORY_METRICS(
 RETURNS ARRAY
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.11'
-PACKAGES = ('numpy','pandas','geopandas','movingpandas','shapely')
+PACKAGES = ('numpy','pandas','geopandas>=1.0.0','movingpandas==0.22.3','shapely')
 HANDLER = 'main'
 AS
 $$
