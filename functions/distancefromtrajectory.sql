@@ -8,7 +8,7 @@ CREATE OR REPLACE FUNCTION @@workflows_temp@@.DISTANCE_FROM_TRAJECTORY(
 RETURNS FLOAT
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.11'
-PACKAGES = ('numpy','pandas','geopandas','movingpandas','shapely','pyproj')
+PACKAGES = ('numpy','pandas','geopandas>=1.0.0','movingpandas==0.22.3','shapely','pyproj')
 HANDLER = 'main'
 AS $$
 import numpy as np

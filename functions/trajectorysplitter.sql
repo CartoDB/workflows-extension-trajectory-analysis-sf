@@ -10,7 +10,7 @@ CREATE OR REPLACE FUNCTION @@workflows_temp@@.TRAJECTORY_STOP_SPLITTER(
 RETURNS ARRAY
 LANGUAGE python
 RUNTIME_VERSION = '3.11'
-PACKAGES = ('numpy','pandas','geopandas','movingpandas','shapely')
+PACKAGES = ('numpy','pandas','geopandas>=1.0.0','movingpandas==0.22.3','shapely')
 HANDLER = 'main'
 AS
 $$
@@ -85,7 +85,7 @@ CREATE OR REPLACE FUNCTION @@workflows_temp@@.TRAJECTORY_TEMPORAL_SPLITTER(
 RETURNS ARRAY
 LANGUAGE python
 RUNTIME_VERSION = '3.11'
-PACKAGES = ('numpy','pandas','geopandas','movingpandas','shapely')
+PACKAGES = ('numpy','pandas','geopandas>=1.0.0','movingpandas==0.22.3','shapely')
 HANDLER = 'main'
 AS
 $$
@@ -150,7 +150,7 @@ CREATE OR REPLACE FUNCTION @@workflows_temp@@.TRAJECTORY_SPEED_SPLITTER(
 RETURNS ARRAY
 LANGUAGE python
 RUNTIME_VERSION = '3.11'
-PACKAGES = ('numpy','pandas','geopandas','movingpandas','shapely')
+PACKAGES = ('numpy','pandas','geopandas>=1.0.0','movingpandas==0.22.3','shapely')
 HANDLER = 'main'
 AS
 $$
@@ -227,7 +227,7 @@ CREATE OR REPLACE FUNCTION @@workflows_temp@@.TRAJECTORY_OBSERVATION_SPLITTER(
 RETURNS ARRAY
 LANGUAGE python
 RUNTIME_VERSION = '3.11'
-PACKAGES = ('numpy','pandas','geopandas','movingpandas','shapely')
+PACKAGES = ('numpy','pandas','geopandas>=1.0.0','movingpandas==0.22.3','shapely')
 HANDLER = 'main'
 AS
 $$
@@ -292,8 +292,6 @@ def main(traj_id, trajectory, min_duration, duration_unit, min_length):
 $$;
 
 -- TRAJECTORY_VALUECHANGE_SPLITTER
--- FIXME: ValueChangeSplitter is not available in the current MovingPandas version in Snowflake
--- This function will fail at runtime until MovingPandas is updated to include ValueChangeSplitter
 CREATE OR REPLACE FUNCTION @@workflows_temp@@.TRAJECTORY_VALUECHANGE_SPLITTER(
     traj_id STRING,
     trajectory ARRAY,
@@ -303,7 +301,7 @@ CREATE OR REPLACE FUNCTION @@workflows_temp@@.TRAJECTORY_VALUECHANGE_SPLITTER(
 RETURNS ARRAY
 LANGUAGE python
 RUNTIME_VERSION = '3.11'
-PACKAGES = ('numpy','pandas','geopandas','movingpandas','shapely')
+PACKAGES = ('numpy','pandas','geopandas>=1.0.0','movingpandas==0.22.3','shapely')
 HANDLER = 'main'
 AS
 $$
@@ -364,8 +362,6 @@ def main(traj_id, trajectory, valuechange_col, min_length):
 $$;
 
 -- TRAJECTORY_ANGLECHANGE_SPLITTER
--- FIXME: AngleChangeSplitter is not available in the current MovingPandas version in Snowflake
--- This function will fail at runtime until MovingPandas is updated to include AngleChangeSplitter
 CREATE OR REPLACE FUNCTION @@workflows_temp@@.TRAJECTORY_ANGLECHANGE_SPLITTER(
     traj_id STRING,
     trajectory ARRAY,
@@ -376,7 +372,7 @@ CREATE OR REPLACE FUNCTION @@workflows_temp@@.TRAJECTORY_ANGLECHANGE_SPLITTER(
 RETURNS ARRAY
 LANGUAGE python
 RUNTIME_VERSION = '3.11'
-PACKAGES = ('numpy','pandas','geopandas','movingpandas','shapely')
+PACKAGES = ('numpy','pandas','geopandas>=1.0.0','movingpandas==0.22.3','shapely')
 HANDLER = 'main'
 AS
 $$

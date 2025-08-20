@@ -21,7 +21,7 @@ CREATE OR REPLACE FUNCTION @@workflows_temp@@.TRAJECTORY_METRICS(
 RETURNS ARRAY
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.11'
-PACKAGES = ('numpy','pandas','geopandas','movingpandas','shapely')
+PACKAGES = ('numpy','pandas','geopandas>=1.0.0','movingpandas==0.22.3','shapely')
 HANDLER = 'main'
 AS
 $$
@@ -152,23 +152,21 @@ def main(
 
     # Keep track of which columns were actually added
     added_columns = []
-    
-    # TODO: When MovingPandas version is updated, these methods may return the trajectory object
-    # instead of modifying in-place. If so, change back to: traj = traj.add_*() pattern
+
     if input_distance_bool and input_distance_column != "undefined":
-        traj.add_distance(name=input_distance_column, units=distance_units[input_distance_unit_distance])
+        traj = traj.add_distance(name=input_distance_column, units=distance_units[input_distance_unit_distance])
         added_columns.append(input_distance_column)
     if input_duration_bool and input_duration_column != "undefined":
-        traj.add_timedelta(name=input_duration_column)
+        traj = traj.add_timedelta(name=input_duration_column)
         added_columns.append(input_duration_column)
     if input_direction_bool and input_direction_column != "undefined":
-        traj.add_direction(name=input_direction_column)
+        traj = traj.add_direction(name=input_direction_column)
         added_columns.append(input_direction_column)
     if input_speed_bool and input_speed_column != "undefined":
-        traj.add_speed(name=input_speed_column, units=(distance_units[input_speed_unit_distance], time_units[input_speed_unit_time]))
+        traj = traj.add_speed(name=input_speed_column, units=(distance_units[input_speed_unit_distance], time_units[input_speed_unit_time]))
         added_columns.append(input_speed_column)
     if input_acceleration_bool and input_acceleration_column != "undefined":
-        traj.add_acceleration(name=input_acceleration_column, units=(distance_units[input_acceleration_unit_distance], time_units[input_acceleration_unit_time], time_units[input_acceleration_unit_time]))
+        traj = traj.add_acceleration(name=input_acceleration_column, units=(distance_units[input_acceleration_unit_distance], time_units[input_acceleration_unit_time], time_units[input_acceleration_unit_time]))
         added_columns.append(input_acceleration_column)
 
     result = traj.to_point_gdf().reset_index()
