@@ -292,8 +292,6 @@ def main(traj_id, trajectory, min_duration, duration_unit, min_length):
 $$;
 
 -- TRAJECTORY_VALUECHANGE_SPLITTER
--- FIXME: ValueChangeSplitter is not available in the current MovingPandas version in Snowflake
--- This function will fail at runtime until MovingPandas is updated to include ValueChangeSplitter
 CREATE OR REPLACE FUNCTION @@workflows_temp@@.TRAJECTORY_VALUECHANGE_SPLITTER(
     traj_id STRING,
     trajectory ARRAY,
@@ -364,8 +362,6 @@ def main(traj_id, trajectory, valuechange_col, min_length):
 $$;
 
 -- TRAJECTORY_ANGLECHANGE_SPLITTER
--- FIXME: AngleChangeSplitter is not available in the current MovingPandas version in Snowflake
--- This function will fail at runtime until MovingPandas is updated to include AngleChangeSplitter
 CREATE OR REPLACE FUNCTION @@workflows_temp@@.TRAJECTORY_ANGLECHANGE_SPLITTER(
     traj_id STRING,
     trajectory ARRAY,

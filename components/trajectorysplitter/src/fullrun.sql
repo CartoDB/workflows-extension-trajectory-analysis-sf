@@ -57,6 +57,13 @@ $$
             ${MIN_SPEED},
             ${MIN_LENGTH}
         )`;
+    } else if (METHOD === 'Value Change') {
+        udfCall = `@@workflows_temp@@.TRAJECTORY_VALUECHANGE_SPLITTER(
+            ${TRAJ_ID_COL},
+            ${TPOINTS_COL},
+            '${VALUECHANGE_COL}',
+            ${MIN_LENGTH}
+        )`;
     } else {
         throw new Error(`Unknown method: ${METHOD}`);
     }
