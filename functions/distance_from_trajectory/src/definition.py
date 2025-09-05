@@ -10,15 +10,15 @@
 # ]
 # ///
 
-import numpy as np
-import pandas as pd
-import geopandas as gpd
-import movingpandas as mpd
-import shapely
 import math
 
-from pyproj import Transformer
-from movingpandas.unit_utils import get_conversion
+import geopandas as gpd  # type: ignore[import]
+import movingpandas as mpd  # type: ignore[import]
+import pandas as pd  # type: ignore[import]
+import shapely  # type: ignore[import]
+from movingpandas.unit_utils import get_conversion  # type: ignore[import]
+from pyproj import Transformer  # type: ignore[import]
+
 
 def main(
     traj_id,
@@ -32,7 +32,7 @@ def main(
         "Kilometers": "km",
         "Meters": "m",
         "Miles": "mi",
-        "Nautical Miles": "nm"
+        "Nautical Miles": "nm",
     }
 
     # Convert English names to short names
@@ -44,7 +44,7 @@ def main(
     # Load the position as a geometry in World Mercator
     position = shapely.wkt.loads(position)
     latitude_degrees = position.y  # Get latitude before transformation
-    transformer = Transformer.from_crs('EPSG:4326', 'EPSG:3395', always_xy=True)
+    transformer = Transformer.from_crs("EPSG:4326", "EPSG:3395", always_xy=True)
     position = shapely.Point(*transformer.transform(position.x, position.y))
 
     # Compute the correction factor
@@ -59,27 +59,27 @@ def main(
         return None
 
     # CRITICAL: Convert timestamps to datetime (Snowflake compatibility)
-    df['t'] = pd.to_datetime(df['t'])
+    df["t"] = pd.to_datetime(df["t"])
 
     # build the GeoDataFrame
     gdf = (
         gpd.GeoDataFrame(
-            df[['t', 'properties']],
+            df[["t", "properties"]],
             geometry=gpd.points_from_xy(df.lon, df.lat),
-            crs=4326
+            crs=4326,
         )
-        .set_index('t')
-        .to_crs('EPSG:3395')  # Reproject to Web Mercator
+        .set_index("t")
+        .to_crs("EPSG:3395")  # Reproject to Web Mercator
     )
 
-    if df.t.nunique() <= 1 or distance_from == 'First Point':
+    if df.t.nunique() <= 1 or distance_from == "First Point":
         distance = gdf.iloc[0].geometry.distance(position)
-        conversion = get_conversion(unit, 'm')
+        conversion = get_conversion(unit, "m")
         return distance * correction_factor / conversion.distance
-    elif distance_from == 'Last Point':
+    elif distance_from == "Last Point":
         distance = gdf.iloc[-1].geometry.distance(position)
-        conversion = get_conversion(unit, 'm')
+        conversion = get_conversion(unit, "m")
         return distance * correction_factor / conversion.distance
-    elif distance_from == 'Nearest Point':
+    elif distance_from == "Nearest Point":
         traj = mpd.Trajectory(gdf, traj_id)
         return traj.distance(other=position, units=unit) * correction_factor

@@ -11,10 +11,10 @@
 
 from datetime import timedelta
 
-import numpy as np
-import pandas as pd
-import geopandas as gpd
-import movingpandas as mpd
+import geopandas as gpd  # type: ignore[import]
+import movingpandas as mpd  # type: ignore[import]
+import pandas as pd  # type: ignore[import]
+
 
 def main(
     traj_id,
@@ -28,7 +28,7 @@ def main(
         "Seconds": "seconds",
         "Minutes": "minutes",
         "Hours": "hours",
-        "Days": "days"
+        "Days": "days",
     }
 
     # build the DataFrame
@@ -39,17 +39,12 @@ def main(
         return []
 
     # Convert timestamp column to datetime
-    df['t'] = pd.to_datetime(df['t'])
+    df["t"] = pd.to_datetime(df["t"])
 
     # build the GeoDataFrame
-    gdf = (
-      gpd.GeoDataFrame(
-        df[['t', 'properties']],
-        geometry=gpd.points_from_xy(df.lon, df.lat),
-        crs=4326
-      )
-      .set_index('t')
-    )
+    gdf = gpd.GeoDataFrame(
+        df[["t", "properties"]], geometry=gpd.points_from_xy(df.lon, df.lat), crs=4326
+    ).set_index("t")
 
     # build the Trajectory object
     traj = mpd.Trajectory(gdf, traj_id)
@@ -58,20 +53,19 @@ def main(
     kwargs = {time_units[duration_unit]: min_duration}
     duration_td = timedelta(**kwargs)
 
-    result = (
-        mpd.TrajectoryStopDetector(traj)
-        .get_stop_points(
-            max_diameter=max_diameter,
-            min_duration=duration_td,
-        )
+    result = mpd.TrajectoryStopDetector(traj).get_stop_points(
+        max_diameter=max_diameter,
+        min_duration=duration_td,
     )
 
     result = result.reset_index()
-    result['geometry'] = result.geometry.to_wkt()
-    
-    # Convert timestamps to strings with timezone info to match expected format
-    if 'start_time' in result.columns:
-        result['start_time'] = result['start_time'].dt.strftime('%Y-%m-%d %H:%M:%S+00:00')
-        result['end_time'] = result['end_time'].dt.strftime('%Y-%m-%d %H:%M:%S+00:00')
+    result["geometry"] = result.geometry.to_wkt()
 
-    return result.to_dict(orient='records')
+    # Convert timestamps to strings with timezone info to match expected format
+    if "start_time" in result.columns:
+        result["start_time"] = result["start_time"].dt.strftime(
+            "%Y-%m-%d %H:%M:%S+00:00"
+        )
+        result["end_time"] = result["end_time"].dt.strftime("%Y-%m-%d %H:%M:%S+00:00")
+
+    return result.to_dict(orient="records")

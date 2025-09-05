@@ -9,24 +9,18 @@
 # ]
 # ///
 
-import numpy as np
-import pandas as pd
-import geopandas as gpd
-import movingpandas as mpd
-import json
-import shapely
-from shapely.wkt import loads
+import geopandas as gpd  # type: ignore[import]
+import movingpandas as mpd  # type: ignore[import]
+import pandas as pd  # type: ignore[import]
+import shapely  # type: ignore[import]
+from shapely.wkt import loads  # type: ignore[import]
 
-def main(
-  traj_id,
-  trajectory,
-  polygon,
-  intersection_method
-):
+
+def main(traj_id, trajectory, polygon, intersection_method):
     if not trajectory:
         return trajectory
 
-    point_based = intersection_method == 'Points'
+    point_based = intersection_method == "Points"
     polygon = loads(polygon)
 
     # build the DataFrame
@@ -37,21 +31,16 @@ def main(
         return []
 
     # MANDATORY timestamp conversion for Snowflake - ensure UTC timezone
-    df['t'] = pd.to_datetime(df['t'])
-    if df['t'].dt.tz is None:
-        df['t'] = df['t'].dt.tz_localize('UTC')
+    df["t"] = pd.to_datetime(df["t"])
+    if df["t"].dt.tz is None:
+        df["t"] = df["t"].dt.tz_localize("UTC")
     else:
-        df['t'] = df['t'].dt.tz_convert('UTC')
+        df["t"] = df["t"].dt.tz_convert("UTC")
 
     # build the GeoDataFrame
-    gdf = (
-      gpd.GeoDataFrame(
-        df[['t', 'properties']],
-        geometry=gpd.points_from_xy(df.lon, df.lat),
-        crs=4326
-      )
-      .set_index('t')
-    )
+    gdf = gpd.GeoDataFrame(
+        df[["t", "properties"]], geometry=gpd.points_from_xy(df.lon, df.lat), crs=4326
+    ).set_index("t")
 
     if df.empty or df.t.nunique() <= 1:
         if shapely.intersects(gdf.geometry.iloc[0], polygon):
@@ -69,12 +58,14 @@ def main(
             intersecting_gdf = gdf[intersecting_indices]
             result = []
             for idx, row in intersecting_gdf.iterrows():
-                result.append({
-                    "lon": row.geometry.x,
-                    "lat": row.geometry.y,
-                    "t": idx.strftime('%Y-%m-%d %H:%M:%S.%f+00:00'),
-                    "properties": row['properties']
-                })
+                result.append(
+                    {
+                        "lon": row.geometry.x,
+                        "lat": row.geometry.y,
+                        "t": idx.strftime("%Y-%m-%d %H:%M:%S.%f+00:00"),
+                        "properties": row["properties"],
+                    }
+                )
             return result
         else:
             return []
@@ -88,12 +79,14 @@ def main(
             # Extract points from clipped trajectory
             result = []
             for idx, row in clipped.df.iterrows():
-                result.append({
-                    "lon": row.geometry.x,
-                    "lat": row.geometry.y,
-                    "t": idx.strftime('%Y-%m-%d %H:%M:%S.%f+00:00'),
-                    "properties": row['properties']
-                })
+                result.append(
+                    {
+                        "lon": row.geometry.x,
+                        "lat": row.geometry.y,
+                        "t": idx.strftime("%Y-%m-%d %H:%M:%S.%f+00:00"),
+                        "properties": row["properties"],
+                    }
+                )
             return result
         except Exception:
             # Fallback to point-based intersection if clip fails
@@ -102,12 +95,14 @@ def main(
                 intersecting_gdf = gdf[intersecting_indices]
                 result = []
                 for idx, row in intersecting_gdf.iterrows():
-                    result.append({
-                        "lon": row.geometry.x,
-                        "lat": row.geometry.y,
-                        "t": idx.strftime('%Y-%m-%d %H:%M:%S.%f+00:00'),
-                        "properties": row['properties']
-                    })
+                    result.append(
+                        {
+                            "lon": row.geometry.x,
+                            "lat": row.geometry.y,
+                            "t": idx.strftime("%Y-%m-%d %H:%M:%S.%f+00:00"),
+                            "properties": row["properties"],
+                        }
+                    )
                 return result
             else:
                 return []
