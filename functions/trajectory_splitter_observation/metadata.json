@@ -1,6 +1,6 @@
 {
-  "name": "trajectory_temporal_splitter",
-  "description": "Function TRAJECTORY_TEMPORAL_SPLITTER",
+  "name": "trajectory_splitter_observation",
+  "description": "Function TRAJECTORY_SPLITTER_OBSERVATION",
   "parameters": [
     {
       "name": "traj_id",
@@ -13,9 +13,14 @@
       "description": "Parameter trajectory"
     },
     {
-      "name": "mode",
+      "name": "min_duration",
+      "type": "FLOAT",
+      "description": "Parameter min_duration"
+    },
+    {
+      "name": "duration_unit",
       "type": "STRING",
-      "description": "Parameter mode"
+      "description": "Parameter duration_unit"
     },
     {
       "name": "min_length",
@@ -25,6 +30,6 @@
   ],
   "returns": {
     "type": "ARRAY",
-    "description": "Return value from TRAJECTORY_TEMPORAL_SPLITTER"
+    "description": "Return value from TRAJECTORY_SPLITTER_OBSERVATION"
   }
 }

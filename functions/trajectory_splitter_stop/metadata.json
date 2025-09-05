@@ -1,6 +1,6 @@
 {
-  "name": "trajectory_speed_splitter",
-  "description": "Function TRAJECTORY_SPEED_SPLITTER",
+  "name": "trajectory_splitter_stop",
+  "description": "Function TRAJECTORY_SPLITTER_STOP",
   "parameters": [
     {
       "name": "traj_id",
@@ -13,11 +13,6 @@
       "description": "Parameter trajectory"
     },
     {
-      "name": "min_speed",
-      "type": "FLOAT",
-      "description": "Parameter min_speed"
-    },
-    {
       "name": "min_duration",
       "type": "FLOAT",
       "description": "Parameter min_duration"
@@ -28,6 +23,11 @@
       "description": "Parameter duration_unit"
     },
     {
+      "name": "max_diameter",
+      "type": "FLOAT",
+      "description": "Parameter max_diameter"
+    },
+    {
       "name": "min_length",
       "type": "FLOAT",
       "description": "Parameter min_length"
@@ -35,6 +35,6 @@
   ],
   "returns": {
     "type": "ARRAY",
-    "description": "Return value from TRAJECTORY_SPEED_SPLITTER"
+    "description": "Return value from TRAJECTORY_SPLITTER_STOP"
   }
 }

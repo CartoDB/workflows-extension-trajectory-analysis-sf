@@ -1,6 +1,6 @@
 {
-  "name": "trajectory_outlier_cleaner",
-  "description": "Function TRAJECTORY_OUTLIER_CLEANER",
+  "name": "trajectory_cleaner_outlier",
+  "description": "Function TRAJECTORY_CLEANER_OUTLIER",
   "parameters": [
     {
       "name": "traj_id",
@@ -30,6 +30,6 @@
   ],
   "returns": {
     "type": "VARIANT",
-    "description": "Return value from TRAJECTORY_OUTLIER_CLEANER"
+    "description": "Return value from TRAJECTORY_CLEANER_OUTLIER"
   }
 }
