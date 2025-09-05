@@ -1,30 +1,14 @@
-CREATE OR REPLACE FUNCTION @@workflows_temp@@.TRAJECTORY_METRICS(
-    traj_id STRING,
-    trajectory ARRAY,
-    input_distance_bool BOOLEAN,
-    input_duration_bool BOOLEAN,
-    input_direction_bool BOOLEAN,
-    input_speed_bool BOOLEAN,
-    input_acceleration_bool BOOLEAN,
-    input_distance_column STRING,
-    input_duration_column STRING,
-    input_direction_column STRING,
-    input_speed_column STRING,
-    input_acceleration_column STRING,
-    input_distance_unit_distance STRING,
-    input_speed_unit_distance STRING,
-    input_acceleration_unit_distance STRING,
-    input_duration_unit_time STRING,
-    input_speed_unit_time STRING,
-    input_acceleration_unit_time STRING
-)
-RETURNS ARRAY
-LANGUAGE PYTHON
-RUNTIME_VERSION = '3.11'
-PACKAGES = ('numpy','pandas','geopandas','movingpandas','shapely')
-HANDLER = 'main'
-AS
-$$
+# /// script
+# requires-python = "==3.11"
+# dependencies = [
+#   "numpy",
+#   "pandas",
+#   "geopandas==1.1.1",
+#   "movingpandas==0.22.3",
+#   "shapely",
+# ]
+# ///
+
 from datetime import timedelta
 
 import numpy as np
@@ -184,4 +168,3 @@ def main(
     result = result[['lon', 'lat', 't', 'properties']]
 
     return result.to_dict(orient='records')
-$$;

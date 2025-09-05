@@ -1,16 +1,14 @@
-CREATE OR REPLACE FUNCTION @@workflows_temp@@.TRAJECTORY_OUTLIER_CLEANER(
-    traj_id STRING,
-    trajectory VARIANT,
-    speed_threshold FLOAT,
-    input_unit_distance STRING,
-    input_unit_time STRING
-)
-RETURNS VARIANT
-LANGUAGE PYTHON
-RUNTIME_VERSION = '3.11'
-PACKAGES = ('numpy','pandas','geopandas','movingpandas','shapely')
-HANDLER = 'main'
-AS $$
+# /// script
+# requires-python = "==3.11"
+# dependencies = [
+#   "numpy",
+#   "pandas",
+#   "geopandas==1.1.1",
+#   "movingpandas==0.22.3",
+#   "shapely",
+# ]
+# ///
+
 from datetime import timedelta
 import warnings
 
@@ -72,6 +70,8 @@ def main(
 
     with warnings.catch_warnings(record=True) as caught_warnings:
         warnings.simplefilter('always')
+        # Filter out deprecation warnings about BlockManager
+        warnings.filterwarnings('ignore', message='.*BlockManager.*', category=FutureWarning)
 
         result = mpd.OutlierCleaner(traj).clean(v_max=speed_threshold, units=(distance_unit, time_unit))
 
@@ -87,4 +87,3 @@ def main(
           result['logs'] = ''
 
         return result.to_dict(orient='records')
-$$;

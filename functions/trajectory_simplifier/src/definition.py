@@ -1,15 +1,12 @@
-CREATE OR REPLACE FUNCTION @@workflows_temp@@.TRAJECTORY_SIMPLIFIER(
-    traj_id STRING,
-    trajectory VARIANT,
-    tolerance FLOAT,
-    rounding_precision FLOAT
-)
-RETURNS VARIANT
-LANGUAGE PYTHON
-RUNTIME_VERSION = '3.11'
-PACKAGES = ('pymeos==1.2.0','pandas','shapely')
-HANDLER = 'main'
-AS $$
+# /// script
+# requires-python = "==3.11"
+# dependencies = [
+#   "pymeos==1.2.0",
+#   "pandas",
+#   "shapely",
+# ]
+# ///
+
 from pymeos import pymeos_initialize, pymeos_finalize, TGeogPointInst, TGeogPointSeq
 import pandas as pd
 import datetime
@@ -80,4 +77,3 @@ def main(traj_id, trajectory, tolerance, rounding_precision):
     result['properties'] = result['properties'].fillna('{}')
 
     return result.to_dict(orient='records')
-$$;

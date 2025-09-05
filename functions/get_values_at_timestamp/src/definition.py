@@ -1,14 +1,14 @@
-CREATE OR REPLACE FUNCTION @@workflows_temp@@.GET_VALUES_AT_TIMESTAMP(
-    traj_id STRING,
-    trajectory VARIANT,
-    timestamp_str STRING
-)
-RETURNS VARIANT
-LANGUAGE PYTHON
-RUNTIME_VERSION = '3.11'
-PACKAGES = ('numpy','pandas','geopandas','movingpandas','shapely')
-HANDLER = 'main'
-AS $$
+# /// script
+# requires-python = "==3.11"
+# dependencies = [
+#   "numpy",
+#   "pandas",
+#   "geopandas==1.1.1",
+#   "movingpandas==0.22.3",
+#   "shapely",
+# ]
+# ///
+
 import numpy as np
 import pandas as pd
 import geopandas as gpd
@@ -52,4 +52,3 @@ def main(
         "t": t_at,
         "geom": dumps(geoms)
     } if geoms else None
-$$;

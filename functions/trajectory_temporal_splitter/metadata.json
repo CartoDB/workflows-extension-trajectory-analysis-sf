@@ -1,0 +1,30 @@
+{
+  "name": "trajectory_temporal_splitter",
+  "description": "Function TRAJECTORY_TEMPORAL_SPLITTER",
+  "parameters": [
+    {
+      "name": "traj_id",
+      "type": "STRING",
+      "description": "Parameter traj_id"
+    },
+    {
+      "name": "trajectory",
+      "type": "ARRAY",
+      "description": "Parameter trajectory"
+    },
+    {
+      "name": "mode",
+      "type": "STRING",
+      "description": "Parameter mode"
+    },
+    {
+      "name": "min_length",
+      "type": "FLOAT",
+      "description": "Parameter min_length"
+    }
+  ],
+  "returns": {
+    "type": "ARRAY",
+    "description": "Return value from TRAJECTORY_TEMPORAL_SPLITTER"
+  }
+}

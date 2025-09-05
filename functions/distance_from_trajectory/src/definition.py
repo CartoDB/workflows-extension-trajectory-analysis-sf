@@ -1,16 +1,15 @@
-CREATE OR REPLACE FUNCTION @@workflows_temp@@.DISTANCE_FROM_TRAJECTORY(
-    traj_id STRING,
-    trajectory VARIANT,
-    position STRING,
-    distance_from STRING,
-    units STRING
-)
-RETURNS FLOAT
-LANGUAGE PYTHON
-RUNTIME_VERSION = '3.11'
-PACKAGES = ('numpy','pandas','geopandas','movingpandas','shapely','pyproj')
-HANDLER = 'main'
-AS $$
+# /// script
+# requires-python = "==3.11"
+# dependencies = [
+#   "numpy",
+#   "pandas",
+#   "geopandas==1.1.1",
+#   "movingpandas==0.22.3",
+#   "shapely",
+#   "pyproj",
+# ]
+# ///
+
 import numpy as np
 import pandas as pd
 import geopandas as gpd
@@ -84,4 +83,3 @@ def main(
     elif distance_from == 'Nearest Point':
         traj = mpd.Trajectory(gdf, traj_id)
         return traj.distance(other=position, units=unit) * correction_factor
-$$;
