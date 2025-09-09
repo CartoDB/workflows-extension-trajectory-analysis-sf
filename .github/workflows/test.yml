@@ -26,13 +26,26 @@ jobs:
         uv venv --python 3.11.9
         uv pip install -r requirements.txt
     
+    # BigQuery authentication (conditional - only if secrets exist)
+    - name: Authenticate to Google Cloud
+      if: ${{ secrets.BQ_CREDENTIALS_JSON_CI != '' }}
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.BQ_CREDENTIALS_JSON_CI }}
+        project_id: ${{ vars.BQ_TEST_PROJECT }}
+        create_credentials_file: true
+    
     - name: Run tests
       run: uv run carto_extension.py test
       env:
         # CI detection
         CI: true
         
-        # Snowflake connection settings  
+        # BigQuery connection settings (conditional)
+        BQ_TEST_PROJECT: ${{ vars.BQ_TEST_PROJECT }}
+        BQ_TEST_DATASET: ${{ vars.BQ_TEST_DATASET }}
+        
+        # Snowflake connection settings (conditional)
         SF_USER: ${{ secrets.SF_USER }}
         SF_PASSWORD: ${{ secrets.SF_PASSWORD }}
         SF_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
