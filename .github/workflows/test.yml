@@ -32,32 +32,10 @@ jobs:
       env:
         SF_USER: ${{ secrets.SF_USER }}
 
-  python-setup:
-    name: Setup Python Environment
-    runs-on: ubuntu-latest
-    needs: check-providers
-    if: >
-      needs.check-providers.outputs.bigquery-available == 'true' ||
-      needs.check-providers.outputs.snowflake-available == 'true'
-    steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Python environment with uv
-      uses: astral-sh/setup-uv@v3
-      with:
-        version: "latest"
-        enable-cache: true
-        cache-dependency-glob: "requirements.txt"
-    
-    - name: Install Python and dependencies
-      run: |
-        uv venv --python 3.11.9
-        uv pip install -r requirements.txt
-
   test-bigquery:
     name: Test BigQuery Extension
     runs-on: ubuntu-latest
-    needs: [python-setup, check-providers]
+    needs: check-providers
     if: needs.check-providers.outputs.bigquery-available == 'true'
     steps:
     - uses: actions/checkout@v4
@@ -66,10 +44,8 @@ jobs:
       uses: astral-sh/setup-uv@v3
       with:
         version: "latest"
-        enable-cache: true
-        cache-dependency-glob: "requirements.txt"
     
-    - name: Install Python and dependencies from cache
+    - name: Install Python and dependencies
       run: |
         uv venv --python 3.11.9
         uv pip install -r requirements.txt
@@ -97,7 +73,7 @@ jobs:
   test-snowflake:
     name: Test Snowflake Extension
     runs-on: ubuntu-latest
-    needs: [python-setup, check-providers]
+    needs: check-providers
     if: needs.check-providers.outputs.snowflake-available == 'true'
     steps:
     - uses: actions/checkout@v4
@@ -106,10 +82,8 @@ jobs:
       uses: astral-sh/setup-uv@v3
       with:
         version: "latest"
-        enable-cache: true
-        cache-dependency-glob: "requirements.txt"
     
-    - name: Install Python and dependencies from cache
+    - name: Install Python and dependencies
       run: |
         uv venv --python 3.11.9
         uv pip install -r requirements.txt
