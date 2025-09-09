@@ -1,0 +1,43 @@
+name: Test Extension
+
+env:
+  GITHUB_ACTIONS: true
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python environment with uv
+      uses: astral-sh/setup-uv@v3
+      with:
+        version: "latest"
+    
+    - name: Set up Python and install dependencies
+      run: |
+        uv python install 3.11.9
+        uv venv --python 3.11.9
+        uv pip install -r requirements.txt
+    
+    - name: Run tests
+      run: uv run carto_extension.py test
+      env:
+        # CI detection
+        CI: true
+        
+        # Snowflake connection settings  
+        SF_USER: ${{ secrets.SF_USER }}
+        SF_PASSWORD: ${{ secrets.SF_PASSWORD }}
+        SF_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
+        SF_TEST_DATABASE: ${{ vars.SF_TEST_DATABASE }}
+        SF_TEST_SCHEMA: ${{ vars.SF_TEST_SCHEMA }}
+        
+        # Python path
+        PYTHONPATH: ${{ github.workspace }}
