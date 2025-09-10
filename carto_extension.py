@@ -23,6 +23,7 @@ import snowflake.connector
 import toml
 from dotenv import dotenv_values, load_dotenv
 from google.cloud import bigquery
+from pytest_unordered import unordered
 from shapely import wkt
 from shapely.geometry import shape
 from shapely.wkt import dumps
@@ -396,6 +397,20 @@ def generate_function_sql_bigquery(function_metadata: dict) -> str:
         options.append(f"runtime_version='python-{python_version}'")
         if packages:
             options.append(f"packages=[{packages_str}]")
+        
+        # Add extra options from metadata if present
+        extra_options = function_metadata.get("extra_options", {})
+        for key, value in extra_options.items():
+            if isinstance(value, str):
+                options.append(f"{key}='{value}'")
+            elif isinstance(value, list):
+                # Handle list values like packages
+                list_str = ",".join([f"'{item}'" for item in value])
+                options.append(f"{key}=[{list_str}]")
+            else:
+                # Handle other types (numbers, booleans)
+                options.append(f"{key}={value}")
+        
         options_str = ",\n    ".join(options)
 
         return f"""CREATE OR REPLACE FUNCTION @@workflows_temp@@.`{func_name}`(
@@ -525,6 +540,23 @@ def generate_function_sql_snowflake(function_metadata: dict) -> str:
         # Snowflake Python UDF format
         packages_str = ",".join([f"'{pkg}'" for pkg in packages]) if packages else ""
         packages_clause = f"PACKAGES = ({packages_str})" if packages else ""
+        
+        # Add extra options from metadata if present
+        extra_options_clauses = []
+        extra_options = function_metadata.get("extra_options", {})
+        for key, value in extra_options.items():
+            if isinstance(value, str):
+                extra_options_clauses.append(f"{key.upper()} = '{value}'")
+            elif isinstance(value, list):
+                # Handle list values
+                list_str = ",".join([f"'{item}'" for item in value])
+                extra_options_clauses.append(f"{key.upper()} = ({list_str})")
+            else:
+                # Handle other types (numbers, booleans)
+                extra_options_clauses.append(f"{key.upper()} = {value}")
+        
+        extra_options_str = "\n            ".join(extra_options_clauses)
+        extra_options_line = f"\n            {extra_options_str}" if extra_options_clauses else ""
 
         return f"""CREATE OR REPLACE FUNCTION @@workflows_temp@@.{func_name}(
                 {params_str}
@@ -532,7 +564,7 @@ def generate_function_sql_snowflake(function_metadata: dict) -> str:
             RETURNS {return_type}
             LANGUAGE PYTHON
             RUNTIME_VERSION = '{python_version}'
-            {packages_clause}
+            {packages_clause}{extra_options_line}
             HANDLER = 'main'
             AS
             $$\n{clean_python_code}\n$$;
@@ -633,8 +665,12 @@ def get_procedure_code_bq(component):
 
 def create_sql_code_bq(metadata):
     functions_code = ""
+    function_names = []
     if metadata.get("functions"):
         functions_code = get_functions_code("bigquery")
+        # Get function names for tracking
+        functions = discover_functions()
+        function_names = [f"`{func['name'].upper()}`" for func in functions]
 
     procedures_code = ""
     for component in metadata["components"]:
@@ -647,12 +683,15 @@ def create_sql_code_bq(metadata):
         f"""\
         DECLARE procedures STRING;
         DECLARE proceduresArray ARRAY<STRING>;
+        DECLARE functions STRING;
+        DECLARE functionsArray ARRAY<STRING>;
         DECLARE i INT64 DEFAULT 0;
 
         CREATE TABLE IF NOT EXISTS {WORKFLOWS_TEMP_PLACEHOLDER}.{EXTENSIONS_TABLENAME} (
             name STRING,
             metadata STRING,
-            procedures STRING
+            procedures STRING,
+            functions STRING
         );
 
         -- remove procedures from previous installations
@@ -673,6 +712,25 @@ def create_sql_code_bq(metadata):
             END LOOP;
         END IF;
 
+        -- remove functions from previous installations
+
+        SET functions = (
+            SELECT functions
+            FROM {WORKFLOWS_TEMP_PLACEHOLDER}.{EXTENSIONS_TABLENAME}
+            WHERE name = '{metadata["name"]}'
+        );
+        IF (functions IS NOT NULL) THEN
+            SET functionsArray = SPLIT(functions, ',');
+            SET i = 0;
+            LOOP
+                SET i = i + 1;
+                IF i > ARRAY_LENGTH(functionsArray) THEN
+                    LEAVE;
+                END IF;
+                EXECUTE IMMEDIATE 'DROP FUNCTION IF EXISTS {WORKFLOWS_TEMP_PLACEHOLDER}.' || functionsArray[ORDINAL(i)];
+            END LOOP;
+        END IF;
+
         DELETE FROM {WORKFLOWS_TEMP_PLACEHOLDER}.{EXTENSIONS_TABLENAME}
         WHERE name = '{metadata["name"]}';
 
@@ -684,8 +742,8 @@ def create_sql_code_bq(metadata):
 
         -- add to extensions table
 
-        INSERT INTO {WORKFLOWS_TEMP_PLACEHOLDER}.{EXTENSIONS_TABLENAME} (name, metadata, procedures)
-        VALUES ('{metadata["name"]}', '''{metadata_string}''', '{','.join(procedures)}');"""
+        INSERT INTO {WORKFLOWS_TEMP_PLACEHOLDER}.{EXTENSIONS_TABLENAME} (name, metadata, procedures, functions)
+        VALUES ('{metadata["name"]}', '''{metadata_string}''', '{','.join(procedures)}', '{','.join(function_names)}');"""
     )
 
     return dedent(code)
@@ -759,8 +817,12 @@ def get_procedure_code_sf(component):
 
 def create_sql_code_sf(metadata):
     functions_code = ""
+    function_names = []
     if metadata.get("functions"):
         functions_code = get_functions_code("snowflake")
+        # Get function names for tracking
+        functions = discover_functions()
+        function_names = [func['name'].upper() for func in functions]
 
     procedures_code = ""
     for component in metadata["components"]:
@@ -772,14 +834,17 @@ def create_sql_code_sf(metadata):
         procedures.append(f"{c['procedureName']}({','.join(param_types)})")
     metadata_string = json.dumps(metadata).replace("\\n", "\\\\n").replace("'", "\\'")
     procedures_string = ";".join(procedures).replace("'", "'")
+    functions_string = ";".join(function_names)
     code = dedent(
         f"""DECLARE
             procedures STRING;
+            functions STRING;
         BEGIN
             CREATE TABLE IF NOT EXISTS {WORKFLOWS_TEMP_PLACEHOLDER}.{EXTENSIONS_TABLENAME} (
                 name STRING,
                 metadata STRING,
-                procedures STRING
+                procedures STRING,
+                functions STRING
             );
 
             -- remove procedures from previous installations
@@ -798,6 +863,22 @@ def create_sql_code_sf(metadata):
                     NULL;
             END;
 
+            -- remove functions from previous installations
+
+            functions := (
+                SELECT functions
+                FROM {WORKFLOWS_TEMP_PLACEHOLDER}.{EXTENSIONS_TABLENAME}
+                WHERE name = '{metadata["name"]}'
+            );
+
+            BEGIN
+                EXECUTE IMMEDIATE 'DROP FUNCTION IF EXISTS {WORKFLOWS_TEMP_PLACEHOLDER}.'
+                    || REPLACE(:functions, ';', ';DROP FUNCTION IF EXISTS {WORKFLOWS_TEMP_PLACEHOLDER}.');
+            EXCEPTION
+                WHEN OTHER THEN
+                    NULL;
+            END;
+
             DELETE FROM {WORKFLOWS_TEMP_PLACEHOLDER}.{EXTENSIONS_TABLENAME}
             WHERE name = '{metadata["name"]}';
 
@@ -809,8 +890,8 @@ def create_sql_code_sf(metadata):
 
             -- add to extensions table
 
-            INSERT INTO {WORKFLOWS_TEMP_PLACEHOLDER}.{EXTENSIONS_TABLENAME} (name, metadata, procedures)
-            VALUES ('{metadata["name"]}', '{metadata_string}', '{procedures_string}');
+            INSERT INTO {WORKFLOWS_TEMP_PLACEHOLDER}.{EXTENSIONS_TABLENAME} (name, metadata, procedures, functions)
+            VALUES ('{metadata["name"]}', '{metadata_string}', '{procedures_string}', '{functions_string}');
         END;"""
     )
 
@@ -1131,6 +1212,7 @@ def _get_test_results(metadata, component, progress_bar=None, use_ci_logging=Fal
         for test_configuration in test_configurations:
             param_values = []
             test_id = test_configuration["id"]
+            skip_outputs = test_configuration.get("skip_output", [])
             component_results[test_id] = {}
             for inputparam in component["inputs"]:
                 param_value = test_configuration["inputs"][inputparam["name"]]
@@ -1151,8 +1233,9 @@ def _get_test_results(metadata, component, progress_bar=None, use_ci_logging=Fal
                         param_values.append(f"'{param_value}'")
                     else:
                         param_values.append(param_value)
-            tablename = f"{workflows_temp}._table_{uuid4().hex}"
+
             for outputparam in component["outputs"]:
+                tablename = f"{workflows_temp}._table_{uuid4().hex}"
                 param_values.append(f"'{tablename}'")
                 tables[outputparam["name"]] = tablename
 
@@ -1175,6 +1258,7 @@ def _get_test_results(metadata, component, progress_bar=None, use_ci_logging=Fal
             component_results[test_id]["full"] = _run_query(
                 full_run_query, component, metadata["provider"], tables
             )
+            component_results[test_id]["skip_output"] = skip_outputs
 
             # Update progress bar or log progress after each test (dry + full run = 1 item)
             if progress_bar:
@@ -1272,11 +1356,11 @@ def _run_query(
     return results
 
 
-def test(component):
+def test(component, no_deploy=False):
     """Run the pytest-based tests."""
 
     # Step 1: Prepare all test data and save to file
-    prepare_test_data(component)
+    prepare_test_data(component, no_deploy=no_deploy)
 
     # Save test data to temporary file
     with tempfile.NamedTemporaryFile(mode="wb", delete=False, suffix=".pkl") as f:
@@ -1362,12 +1446,13 @@ _test_results_cache = None
 _metadata_cache = None
 
 
-def prepare_test_data(component=None):
+def prepare_test_data(component=None, no_deploy=False):
     """Run all SQL and collect test data."""
     global _test_results_cache, _metadata_cache
 
     _metadata_cache = create_metadata()
-    deploy(None)
+    if not no_deploy:
+        deploy(None)
 
     # Calculate total number of tests to run for progress bar
     total_tests = 0
@@ -1435,6 +1520,16 @@ def load_test_cases():
         for test_id, outputs in test_results_cache[component["name"]].items():
             test_folder = os.path.join(component_folder, "test", "fixtures")
             test_filename = os.path.join(test_folder, f"{test_id}.json")
+            skip_outputs = outputs['skip_output']
+
+            # Results test case (skip if test_id starts with "skip_", skip output if table in skip_outputs)
+            output_names = []
+            for mode in ['dry', 'full']:
+                if mode in outputs:
+                    outputs[mode] = {k: v for k, v in outputs[mode].items() if k not in skip_outputs}
+                    output_names.append(list(outputs[mode].keys()))
+            output_names = list(set(item for sublist in output_names for item in sublist))
+            outputs.pop('skip_output', None)
 
             # Get test configuration for this test_id
             test_config = test_config_map.get(str(test_id), {})
@@ -1462,7 +1557,7 @@ def load_test_cases():
                         "outputs": outputs,
                         "test_filename": test_filename,
                         "test_sorting": test_sorting,
-                        "test_name": f"results_{component['name']}_{test_id}",
+                        "test_name": f"results_{component['name']}_{test_id}__{'_'.join(output_names)}",
                     }
                 )
 
@@ -1506,8 +1601,7 @@ def test_extension_components(test_case):
                 expected_normalized = _sorted_json(expected_normalized)
                 result_normalized = _sorted_json(result_normalized)
 
-            # We import unordered here to avoid pytest warnings
-            from pytest_unordered import unordered
+            # Use unordered comparison for order-independent testing
             assert result_normalized == unordered(expected_normalized)
 
 
@@ -1650,6 +1744,7 @@ def capture(component):
             test_folder = os.path.join(component_folder, "test", "fixtures")
             os.makedirs(test_folder, exist_ok=True)
             test_filename = os.path.join(test_folder, f"{test_id}.json")
+            skip_outputs = outputs.get('skip_output', [])
 
             # Get test configuration for this test_id
             test_config = test_config_map.get(str(test_id), {})
@@ -1658,6 +1753,9 @@ def capture(component):
             with open(test_filename, "w") as f:
                 fixture_outputs = {}
                 for output_name, output_results in outputs["full"].items():
+                    if output_name in skip_outputs:
+                        # Don't capture results for skipped outputs
+                        continue
                     output_dict = output_results.to_dict(orient="records")
                     # Normalize first
                     output_dict = normalize_json(output_dict, decimal_places=3)
@@ -1822,6 +1920,11 @@ parser.add_argument(
     required="deploy" in argv,
 )
 parser.add_argument("-v", "--verbose", help="Verbose mode", action="store_true")
+parser.add_argument(
+    "--no-deploy",
+    help="Skip deployment before testing (for test action only)",
+    action="store_true"
+)
 
 # Only parse args and run if this file is executed directly
 if __name__ == "__main__":
@@ -1832,13 +1935,15 @@ if __name__ == "__main__":
         parser.error("Component can only be used with 'capture' and 'test' actions")
     if args.destination and action not in ["deploy"]:
         parser.error("Destination can only be used with 'deploy' action")
+    if args.no_deploy and action != "test":
+        parser.error("--no-deploy can only be used with 'test' action")
     if action == "package":
         check()
         package()
     elif action == "deploy":
         deploy(args.destination)
     elif action == "test":
-        test(args.component)
+        test(args.component, no_deploy=args.no_deploy)
     elif action == "capture":
         capture(args.component)
     elif action == "check":
