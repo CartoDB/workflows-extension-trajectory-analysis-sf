@@ -683,18 +683,15 @@ def create_sql_code_bq(metadata):
         f"""\
         DECLARE procedures STRING;
         DECLARE proceduresArray ARRAY<STRING>;
-        DECLARE functions STRING;
-        DECLARE functionsArray ARRAY<STRING>;
         DECLARE i INT64 DEFAULT 0;
 
         CREATE TABLE IF NOT EXISTS {WORKFLOWS_TEMP_PLACEHOLDER}.{EXTENSIONS_TABLENAME} (
             name STRING,
             metadata STRING,
-            procedures STRING,
-            functions STRING
+            procedures STRING
         );
 
-        -- remove procedures from previous installations
+        -- remove procedures and functions from previous installations
 
         SET procedures = (
             SELECT procedures
@@ -708,26 +705,12 @@ def create_sql_code_bq(metadata):
                 IF i > ARRAY_LENGTH(proceduresArray) THEN
                     LEAVE;
                 END IF;
-                EXECUTE IMMEDIATE 'DROP PROCEDURE {WORKFLOWS_TEMP_PLACEHOLDER}.' || proceduresArray[ORDINAL(i)];
-            END LOOP;
-        END IF;
-
-        -- remove functions from previous installations
-
-        SET functions = (
-            SELECT functions
-            FROM {WORKFLOWS_TEMP_PLACEHOLDER}.{EXTENSIONS_TABLENAME}
-            WHERE name = '{metadata["name"]}'
-        );
-        IF (functions IS NOT NULL) THEN
-            SET functionsArray = SPLIT(functions, ',');
-            SET i = 0;
-            LOOP
-                SET i = i + 1;
-                IF i > ARRAY_LENGTH(functionsArray) THEN
-                    LEAVE;
+                -- Check if this is a function (marked with __func_ prefix)
+                IF STARTS_WITH(proceduresArray[ORDINAL(i)], '__func_') THEN
+                    EXECUTE IMMEDIATE 'DROP FUNCTION IF EXISTS {WORKFLOWS_TEMP_PLACEHOLDER}.' || SUBSTR(proceduresArray[ORDINAL(i)], 8);
+                ELSE
+                    EXECUTE IMMEDIATE 'DROP PROCEDURE IF EXISTS {WORKFLOWS_TEMP_PLACEHOLDER}.' || proceduresArray[ORDINAL(i)];
                 END IF;
-                EXECUTE IMMEDIATE 'DROP FUNCTION IF EXISTS {WORKFLOWS_TEMP_PLACEHOLDER}.' || functionsArray[ORDINAL(i)];
             END LOOP;
         END IF;
 
@@ -742,8 +725,8 @@ def create_sql_code_bq(metadata):
 
         -- add to extensions table
 
-        INSERT INTO {WORKFLOWS_TEMP_PLACEHOLDER}.{EXTENSIONS_TABLENAME} (name, metadata, procedures, functions)
-        VALUES ('{metadata["name"]}', '''{metadata_string}''', '{','.join(procedures)}', '{','.join(function_names)}');"""
+        INSERT INTO {WORKFLOWS_TEMP_PLACEHOLDER}.{EXTENSIONS_TABLENAME} (name, metadata, procedures)
+        VALUES ('{metadata["name"]}', '''{metadata_string}''', '{','.join(procedures + [f"__func_{name}" for name in function_names])}');"""
     )
 
     return dedent(code)
@@ -834,20 +817,17 @@ def create_sql_code_sf(metadata):
         procedures.append(f"{c['procedureName']}({','.join(param_types)})")
     metadata_string = json.dumps(metadata).replace("\\n", "\\\\n").replace("'", "\\'")
     procedures_string = ";".join(procedures).replace("'", "'")
-    functions_string = ";".join(function_names)
     code = dedent(
         f"""DECLARE
             procedures STRING;
-            functions STRING;
         BEGIN
             CREATE TABLE IF NOT EXISTS {WORKFLOWS_TEMP_PLACEHOLDER}.{EXTENSIONS_TABLENAME} (
                 name STRING,
                 metadata STRING,
-                procedures STRING,
-                functions STRING
+                procedures STRING
             );
 
-            -- remove procedures from previous installations
+            -- remove procedures and functions from previous installations
 
             procedures := (
                 SELECT procedures
@@ -855,29 +835,36 @@ def create_sql_code_sf(metadata):
                 WHERE name = '{metadata["name"]}'
             );
 
-            BEGIN
-                EXECUTE IMMEDIATE 'DROP PROCEDURE IF EXISTS {WORKFLOWS_TEMP_PLACEHOLDER}.'
-                    || REPLACE(:procedures, ';', ';DROP PROCEDURE IF EXISTS {WORKFLOWS_TEMP_PLACEHOLDER}.');
-            EXCEPTION
-                WHEN OTHER THEN
-                    NULL;
-            END;
-
-            -- remove functions from previous installations
-
-            functions := (
-                SELECT functions
-                FROM {WORKFLOWS_TEMP_PLACEHOLDER}.{EXTENSIONS_TABLENAME}
-                WHERE name = '{metadata["name"]}'
-            );
-
-            BEGIN
-                EXECUTE IMMEDIATE 'DROP FUNCTION IF EXISTS {WORKFLOWS_TEMP_PLACEHOLDER}.'
-                    || REPLACE(:functions, ';', ';DROP FUNCTION IF EXISTS {WORKFLOWS_TEMP_PLACEHOLDER}.');
-            EXCEPTION
-                WHEN OTHER THEN
-                    NULL;
-            END;
+            -- Parse the procedures string to handle both procedures and functions
+            IF (procedures IS NOT NULL) THEN
+                DECLARE
+                    proc_array ARRAY;
+                    proc_item STRING;
+                    i INTEGER DEFAULT 0;
+                BEGIN
+                    proc_array := SPLIT(procedures, ';');
+                    WHILE (i < ARRAY_SIZE(proc_array)) DO
+                        proc_item := proc_array[i];
+                        -- Check if this is a function (marked with __func_ prefix)
+                        IF (STARTSWITH(proc_item, '__func_')) THEN
+                            BEGIN
+                                EXECUTE IMMEDIATE 'DROP FUNCTION IF EXISTS {WORKFLOWS_TEMP_PLACEHOLDER}.' || SUBSTR(proc_item, 8);
+                            EXCEPTION
+                                WHEN OTHER THEN
+                                    NULL;
+                            END;
+                        ELSE
+                            BEGIN
+                                EXECUTE IMMEDIATE 'DROP PROCEDURE IF EXISTS {WORKFLOWS_TEMP_PLACEHOLDER}.' || proc_item;
+                            EXCEPTION
+                                WHEN OTHER THEN
+                                    NULL;
+                            END;
+                        END IF;
+                        i := i + 1;
+                    END WHILE;
+                END;
+            END IF;
 
             DELETE FROM {WORKFLOWS_TEMP_PLACEHOLDER}.{EXTENSIONS_TABLENAME}
             WHERE name = '{metadata["name"]}';
@@ -890,8 +877,8 @@ def create_sql_code_sf(metadata):
 
             -- add to extensions table
 
-            INSERT INTO {WORKFLOWS_TEMP_PLACEHOLDER}.{EXTENSIONS_TABLENAME} (name, metadata, procedures, functions)
-            VALUES ('{metadata["name"]}', '{metadata_string}', '{procedures_string}', '{functions_string}');
+            INSERT INTO {WORKFLOWS_TEMP_PLACEHOLDER}.{EXTENSIONS_TABLENAME} (name, metadata, procedures)
+            VALUES ('{metadata["name"]}', '{metadata_string}', '{procedures_string};{";".join([f"__func_{name}" for name in function_names]) if function_names else ""}');
         END;"""
     )
 
@@ -1207,13 +1194,13 @@ def _get_test_results(metadata, component, progress_bar=None, use_ci_logging=Fal
         with open(test_configuration_file, "r") as f:
             test_configurations = json.loads(substitute_vars(f.read()))
 
-        tables = {}
         component_results = {}
         for test_configuration in test_configurations:
             param_values = []
             test_id = test_configuration["id"]
             skip_outputs = test_configuration.get("skip_output", [])
             component_results[test_id] = {}
+            tables = {}
             for inputparam in component["inputs"]:
                 param_value = test_configuration["inputs"][inputparam["name"]]
                 if param_value is None:
@@ -1727,7 +1714,24 @@ def capture(component):
     current_folder = os.path.dirname(os.path.abspath(__file__))
     components_folder = os.path.join(current_folder, "components")
     deploy(None)
-    results = _get_test_results(metadata, component)
+    
+    # Calculate total number of tests to run for progress bar
+    total_tests = 0
+    for comp in metadata["components"]:
+        if component and comp["name"] != component:
+            continue
+        component_folder = os.path.join(components_folder, comp["name"])
+        test_configuration_file = os.path.join(component_folder, "test", "test.json")
+        with open(test_configuration_file, "r") as f:
+            test_configurations = json.loads(substitute_vars(f.read()))
+        total_tests += len(test_configurations)
+    
+    # Run tests with progress bar
+    if not verbose:
+        with tqdm(total=total_tests, desc="Running SQL tests", unit="test") as pbar:
+            results = _get_test_results(metadata, component, progress_bar=pbar)
+    else:
+        results = _get_test_results(metadata, component)
     dotenv = dotenv_values()
     for component in metadata["components"]:
         component_folder = os.path.join(components_folder, component["name"])
