@@ -1,0 +1,25 @@
+{
+  "name": "get_values_at_timestamp",
+  "description": "Function GET_VALUES_AT_TIMESTAMP",
+  "parameters": [
+    {
+      "name": "traj_id",
+      "type": "STRING",
+      "description": "Parameter traj_id"
+    },
+    {
+      "name": "trajectory",
+      "type": "VARIANT",
+      "description": "Parameter trajectory"
+    },
+    {
+      "name": "timestamp_str",
+      "type": "STRING",
+      "description": "Parameter timestamp_str"
+    }
+  ],
+  "returns": {
+    "type": "VARIANT",
+    "description": "Return value from GET_VALUES_AT_TIMESTAMP"
+  }
+}

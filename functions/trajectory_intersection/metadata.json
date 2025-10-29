@@ -1,0 +1,30 @@
+{
+  "name": "trajectory_intersection",
+  "description": "Function TRAJECTORY_INTERSECTION",
+  "parameters": [
+    {
+      "name": "traj_id",
+      "type": "STRING",
+      "description": "Parameter traj_id"
+    },
+    {
+      "name": "trajectory",
+      "type": "VARIANT",
+      "description": "Parameter trajectory"
+    },
+    {
+      "name": "polygon",
+      "type": "STRING",
+      "description": "Parameter polygon"
+    },
+    {
+      "name": "intersection_method",
+      "type": "STRING",
+      "description": "Parameter intersection_method"
+    }
+  ],
+  "returns": {
+    "type": "VARIANT",
+    "description": "Return value from TRAJECTORY_INTERSECTION"
+  }
+}

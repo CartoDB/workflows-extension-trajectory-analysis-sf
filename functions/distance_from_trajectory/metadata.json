@@ -1,0 +1,35 @@
+{
+  "name": "distance_from_trajectory",
+  "description": "Function DISTANCE_FROM_TRAJECTORY",
+  "parameters": [
+    {
+      "name": "traj_id",
+      "type": "STRING",
+      "description": "Parameter traj_id"
+    },
+    {
+      "name": "trajectory",
+      "type": "VARIANT",
+      "description": "Parameter trajectory"
+    },
+    {
+      "name": "position",
+      "type": "STRING",
+      "description": "Parameter position"
+    },
+    {
+      "name": "distance_from",
+      "type": "STRING",
+      "description": "Parameter distance_from"
+    },
+    {
+      "name": "units",
+      "type": "STRING",
+      "description": "Parameter units"
+    }
+  ],
+  "returns": {
+    "type": "FLOAT",
+    "description": "Return value from DISTANCE_FROM_TRAJECTORY"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "name": "trajectory_cleaner_outlier",
+  "description": "Function TRAJECTORY_CLEANER_OUTLIER",
+  "parameters": [
+    {
+      "name": "traj_id",
+      "type": "STRING",
+      "description": "Parameter traj_id"
+    },
+    {
+      "name": "trajectory",
+      "type": "VARIANT",
+      "description": "Parameter trajectory"
+    },
+    {
+      "name": "speed_threshold",
+      "type": "FLOAT",
+      "description": "Parameter speed_threshold"
+    },
+    {
+      "name": "input_unit_distance",
+      "type": "STRING",
+      "description": "Parameter input_unit_distance"
+    },
+    {
+      "name": "input_unit_time",
+      "type": "STRING",
+      "description": "Parameter input_unit_time"
+    }
+  ],
+  "returns": {
+    "type": "VARIANT",
+    "description": "Return value from TRAJECTORY_CLEANER_OUTLIER"
+  }
+}

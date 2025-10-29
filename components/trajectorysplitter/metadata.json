@@ -2,7 +2,7 @@
     "name": "trajectorysplitter",
     "title": "Split Trajectories",
     "description": "Split the trajectories in different segments",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "icon": "trajectory_splitter.svg",
     "cartoEnvVars": [],
     "inputs": [
@@ -35,7 +35,7 @@
             "title": "Split method",
             "description": "Method to use when splitting the trajectories",
             "type": "Selection",
-            "options": ["Stops", "Temporal", "Speed", "Observation Gap"],
+            "options": ["Stops", "Temporal", "Speed", "Observation Gap", "Value Change", "Angle Change"],
             "default": "Stops"
         },
         {

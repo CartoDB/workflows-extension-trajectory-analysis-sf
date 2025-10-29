@@ -1,0 +1,30 @@
+{
+  "name": "trajectory_simplifier",
+  "description": "Function TRAJECTORY_SIMPLIFIER",
+  "parameters": [
+    {
+      "name": "traj_id",
+      "type": "STRING",
+      "description": "Parameter traj_id"
+    },
+    {
+      "name": "trajectory",
+      "type": "VARIANT",
+      "description": "Parameter trajectory"
+    },
+    {
+      "name": "tolerance",
+      "type": "FLOAT",
+      "description": "Parameter tolerance"
+    },
+    {
+      "name": "rounding_precision",
+      "type": "FLOAT",
+      "description": "Parameter rounding_precision"
+    }
+  ],
+  "returns": {
+    "type": "VARIANT",
+    "description": "Return value from TRAJECTORY_SIMPLIFIER"
+  }
+}

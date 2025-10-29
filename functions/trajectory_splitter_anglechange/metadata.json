@@ -1,0 +1,35 @@
+{
+  "name": "trajectory_splitter_anglechange",
+  "description": "Function TRAJECTORY_SPLITTER_ANGLECHANGE",
+  "parameters": [
+    {
+      "name": "traj_id",
+      "type": "STRING",
+      "description": "Parameter traj_id"
+    },
+    {
+      "name": "trajectory",
+      "type": "ARRAY",
+      "description": "Parameter trajectory"
+    },
+    {
+      "name": "min_angle",
+      "type": "FLOAT",
+      "description": "Parameter min_angle"
+    },
+    {
+      "name": "min_speed",
+      "type": "FLOAT",
+      "description": "Parameter min_speed"
+    },
+    {
+      "name": "min_length",
+      "type": "FLOAT",
+      "description": "Parameter min_length"
+    }
+  ],
+  "returns": {
+    "type": "ARRAY",
+    "description": "Return value from TRAJECTORY_SPLITTER_ANGLECHANGE"
+  }
+}

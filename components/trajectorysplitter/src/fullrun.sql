@@ -20,7 +20,7 @@ $$
     // Generate the appropriate UDF call based on method
     let udfCall;
     if (METHOD === 'Stops') {
-        udfCall = `@@workflows_temp@@.TRAJECTORY_STOP_SPLITTER(
+        udfCall = `@@workflows_temp@@.TRAJECTORY_SPLITTER_STOP(
             ${TRAJ_ID_COL},
             ${TPOINTS_COL},
             ${MIN_DURATION}, '${DURATION_UNIT}',
@@ -28,14 +28,14 @@ $$
             ${MIN_LENGTH}
         )`;
     } else if (METHOD === 'Temporal') {
-        udfCall = `@@workflows_temp@@.TRAJECTORY_TEMPORAL_SPLITTER(
+        udfCall = `@@workflows_temp@@.TRAJECTORY_SPLITTER_TEMPORAL(
             ${TRAJ_ID_COL},
             ${TPOINTS_COL},
             '${TIME_MODE}',
             ${MIN_LENGTH}
         )`;
     } else if (METHOD === 'Speed') {
-        udfCall = `@@workflows_temp@@.TRAJECTORY_SPEED_SPLITTER(
+        udfCall = `@@workflows_temp@@.TRAJECTORY_SPLITTER_SPEED(
             ${TRAJ_ID_COL},
             ${TPOINTS_COL},
             ${MIN_SPEED},
@@ -43,14 +43,14 @@ $$
             ${MIN_LENGTH}
         )`;
     } else if (METHOD === 'Observation Gap') {
-        udfCall = `@@workflows_temp@@.TRAJECTORY_OBSERVATION_SPLITTER(
+        udfCall = `@@workflows_temp@@.TRAJECTORY_SPLITTER_OBSERVATION(
             ${TRAJ_ID_COL},
             ${TPOINTS_COL},
             ${MIN_DURATION}, '${DURATION_UNIT}',
             ${MIN_LENGTH}
         )`;
     } else if (METHOD === 'Angle Change') {
-        udfCall = `@@workflows_temp@@.TRAJECTORY_ANGLECHANGE_SPLITTER(
+        udfCall = `@@workflows_temp@@.TRAJECTORY_SPLITTER_ANGLECHANGE(
             ${TRAJ_ID_COL},
             ${TPOINTS_COL},
             ${MIN_ANGLE},
