@@ -204,7 +204,7 @@ def or_client():
 
 def add_namespace_to_component_names(metadata):
     for component in metadata["components"]:
-        component["name"] = f'{metadata["name"]}.{component["name"]}'
+        component["name"] = f"{metadata['name']}.{component['name']}"
     return metadata
 
 
@@ -458,7 +458,7 @@ def generate_function_sql_bigquery(function_metadata: dict) -> str:
                 {params_str}
             )
             OPTIONS (
-                description="{function_metadata.get('description', '')}"
+                description="{function_metadata.get("description", "")}"
             )
             {sql_body}"""
         else:
@@ -901,7 +901,9 @@ def create_sql_code_bq(metadata):
         for func in functions:
             func_type = func.get("type", "function")
             if func_type == "procedure":
-                function_names.append(f"{STORED_PROCEDURE_PREFIX}{func['name'].upper()}")
+                function_names.append(
+                    f"{STORED_PROCEDURE_PREFIX}{func['name'].upper()}"
+                )
             else:
                 function_names.append(f"{FUNCTION_PREFIX}{func['name'].upper()}")
 
@@ -962,7 +964,7 @@ def create_sql_code_bq(metadata):
         -- add to extensions table
 
         INSERT INTO {WORKFLOWS_TEMP_PLACEHOLDER}.{EXTENSIONS_TABLENAME} (name, metadata, procedures)
-        VALUES ('{metadata["name"]}', '''{metadata_string}''', '{','.join(procedures + function_names)}');"""
+        VALUES ('{metadata["name"]}', '''{metadata_string}''', '{",".join(procedures + function_names)}');"""
     )
 
     return dedent(code)
@@ -1008,7 +1010,7 @@ def get_procedure_code_sf(component):
         LANGUAGE SQL
         EXECUTE AS CALLER
         AS '
-        {'DECLARE' if env_vars else ''}
+        {"DECLARE" if env_vars else ""}
             {env_vars}
         BEGIN
             IF ( :dry_run ) THEN
@@ -1121,7 +1123,9 @@ def create_sql_code_sf(metadata):
         for func in functions:
             func_type = func.get("type", "function")
             if func_type == "procedure":
-                function_names.append(f"{STORED_PROCEDURE_PREFIX}{func['name'].upper()}")
+                function_names.append(
+                    f"{STORED_PROCEDURE_PREFIX}{func['name'].upper()}"
+                )
             else:
                 function_names.append(f"{FUNCTION_PREFIX}{func['name'].upper()}")
 
@@ -1151,6 +1155,7 @@ def create_sql_code_sf(metadata):
                 SELECT procedures
                 FROM {WORKFLOWS_TEMP_PLACEHOLDER}.{EXTENSIONS_TABLENAME}
                 WHERE name = '{metadata["name"]}'
+                LIMIT 1
             );
 
             -- Parse the procedures string to handle both procedures and functions
@@ -1633,7 +1638,7 @@ def _upload_test_table_sf(filename, component):
             copy_sql = f"""
             COPY INTO {sf_workflows_temp}.{table_id}
             FROM (
-                SELECT {', '.join(copy_columns)}
+                SELECT {", ".join(copy_columns)}
                 FROM @{stage_name}
             )
             FILE_FORMAT = (TYPE = JSON)
@@ -1885,7 +1890,7 @@ def _build_query(workflows_temp, component_name, param_values, outputs):
         statements.append(f"DROP TABLE IF EXISTS {output_table}")
 
     call_statement = f"""CALL {workflows_temp}.{component_name}(
-        {','.join([str(p) if p is not None else 'null' for p in param_values])}
+        {",".join([str(p) if p is not None else "null" for p in param_values])}
     )"""
     statements.append(call_statement)
 
@@ -2053,11 +2058,11 @@ def _build_pytest_args_from_user_flags():
             continue
 
         # Skip script-specific flags and their values
-        if arg in ["-c", "--component"]:
+        if arg in ["-c", "--component", "-d", "--destination"]:
             skip_next = True  # Skip the next argument (the value)
             continue
-        elif arg in ["--verbose"]:
-            continue  # Skip verbose flag
+        elif arg in ["--verbose", "--no-deploy"]:
+            continue  # Skip script-only flags
 
         # Pass everything else to pytest
         pytest_args.append(arg)
@@ -2234,16 +2239,14 @@ def test_extension_components(test_case):
             full_output = test_case["outputs"]["full"][output_name]
             dry_schema = set(dry_output.dtypes.astype(str).to_dict().keys())
             full_schema = set(full_output.dtypes.astype(str).to_dict().keys())
-            assert (
-                dry_schema == full_schema
-            ), f"Schema mismatch in {test_case['component']['title']} - {test_case['test_id']} - {output_name}"
+            assert dry_schema == full_schema, (
+                f"Schema mismatch in {test_case['component']['title']} - {test_case['test_id']} - {output_name}"
+            )
 
     elif test_case["test_type"] == "results":
         # Test results match expected
         with open(test_case["test_filename"], "r") as f:
-            expected = json.loads(
-                substitute_vars(f.read(), test_case["provider"])
-            )
+            expected = json.loads(substitute_vars(f.read(), test_case["provider"]))
 
         for output_name, test_result_df in test_case["outputs"]["full"].items():
             output = dataframe_to_dict(test_result_df)
@@ -2602,9 +2605,9 @@ def check():
             component_metadata = json.load(f)
         required_fields = ["name", "title", "description", "icon", "version"]
         for field in required_fields:
-            assert (
-                field in component_metadata
-            ), f"Component metadata is missing field '{field}'"
+            assert field in component_metadata, (
+                f"Component metadata is missing field '{field}'"
+            )
     required_fields = [
         "name",
         "title",

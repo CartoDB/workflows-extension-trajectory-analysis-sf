@@ -26,7 +26,7 @@ $$
                     ) WITHIN GROUP (ORDER BY REPLACE(p.value:t::STRING, ' UTC', '')::DATETIME) AS tpoints,
                     ANY_VALUE(p.value:logs::STRING) AS logs
                 FROM ${INPUT_TABLE},
-                LATERAL FLATTEN(input => @@workflows_temp@@.TRAJECTORY_OUTLIER_CLEANER(
+                LATERAL FLATTEN(input => @@workflows_temp@@.TRAJECTORY_CLEANER_OUTLIER(
                     ${TRAJ_ID_COL},
                     ${TPOINTS_COL},
                     ${SPEED_THRESHOLD},
