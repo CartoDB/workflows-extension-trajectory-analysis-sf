@@ -25,18 +25,18 @@
     "functions": [
         "distance_from_trajectory",
         "get_values_at_timestamp",
-        "trajectory_anglechange_splitter",
+        "trajectory_cleaner_outlier",
         "trajectory_intersection",
         "trajectory_metrics",
-        "trajectory_observation_splitter",
-        "trajectory_outlier_cleaner",
         "trajectory_simplifier",
-        "trajectory_speed_splitter",
+        "trajectory_splitter_anglechange",
+        "trajectory_splitter_observation",
+        "trajectory_splitter_speed",
+        "trajectory_splitter_stop",
+        "trajectory_splitter_temporal",
+        "trajectory_splitter_valuechange",
         "trajectory_stop_points",
-        "trajectory_stop_segments",
-        "trajectory_stop_splitter",
-        "trajectory_temporal_splitter",
-        "trajectory_valuechange_splitter"
+        "trajectory_stop_segments"
     ],
     "components": [
         "frompoints",
